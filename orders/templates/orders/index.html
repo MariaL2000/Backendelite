@@ -1,0 +1,893 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="index, follow" />
+  <meta name="description" content="Elite Custom Countertops provides high-quality custom countertops in Tampa, designed to enhance your kitchen or bathroom." />
+  <meta name="keywords" content="elite custom countertops, custom countertops, countertops Tampa, granite countertops, quartz countertops, kitchen remodeling, high-quality countertops" />
+  <meta name="author" content="Elite Custom Countertops" />
+  <link rel="canonical" href="https://www.elitecustomcountertops.com" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Elite Custom Countertops - High-Quality Custom Countertops in Tampa" />
+  <meta property="og:description" content="Upgrade your kitchen or bathroom with premium custom countertops in Tampa." />
+  <meta property="og:image" content="https://www.elitecustomcountertops.com/images/cover.jpg" />
+  <meta property="og:url" content="https://www.elitecustomcountertops.com" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Elite Custom Countertops - High-Quality Custom Countertops in Tampa" />
+  <meta name="twitter:description" content="Upgrade your kitchen or bathroom with premium custom countertops in Tampa." />
+  <meta name="twitter:image" content="https://www.elitecustomcountertops.com/images/cover.jpg" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@500&display=swap" rel="stylesheet" />
+
+  <!-- CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/swiper-bundle.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
+
+  <!-- JavaScript -->
+  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://unpkg.com/feather-icons" ></script>
+  <script src="{% static 'js/script.js' %}" defer></script>
+</head>
+
+
+<body>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#"><img src="{% static 'img/house.png' %}" alt="Logo" width="40" height="50"
+          class="d-inline-block align-text-top" />
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-link active" aria-current="page" href="{% url 'about' %}">About</a>
+          <a class="nav-link" href="{% url 'gallery' %}">Gallery</a>
+          <a class="nav-link" href="#services">Services</a>
+          <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <nav class="navbar-new">
+    <h2></h2>
+    <div class="button-container">
+      <a href="{% url 'contact' %}" class="quote-button">Get a quote</a>
+    </div>
+  </nav>
+
+  <div class="titlepage">
+    <p class="we-are-elite-custom">Welcome to Elite Custom Countertops.</p>
+    <div class="overlap">
+      <div class="nav-bar"></div>
+      <div class="button-container">
+        <a href="{% url 'contact' %}" class="quote-button">Get a quote</a>
+      </div>
+      <p class="OUR-SERVICES">
+        <br />Redefining home renovations.<br /> Experience top-notch
+        craftsmanship with our comprehensive services.
+      </p>
+    </div>
+
+    <div class="circle">
+      <a href="#next" class="arrow">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L12 22M12 22L7 17M12 22L17 17" stroke="black" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+  <!-- Carousel Container -->
+  <div class="carousel-container " id="next">
+    <div class="carousel__scroll">
+      <div class="card__carousel active">
+        <div class="card-background"
+          style="background-image: url(https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=1775&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)">
+          <h1 class="display-3 fw-bold">DESIGN WITH US</h1>
+        </div>
+      </div>
+      <div class="card__carousel">
+        <div class="card-background"
+          style="background-image: url(https://plus.unsplash.com/premium_photo-1661883964999-c1bcb57a7357?q=80&w=1728&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)">
+          <h1 class="display-3 fw-bold">ELEVATE YOUR EXPERIENCE</h1>
+        </div>
+      </div>
+      <div class="card__carousel">
+        <div class="card-background"
+          style='background-image: url(https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)'>
+          <h1 class="display-3 fw-bold">YOUR DREAM, OUR VISION</h1>
+        </div>
+      </div>
+    </div>
+    <div class="container-play">
+      <button id="playPauseBtn">
+        <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+          <path class="play" d="M15 12v16l12-8z" fill="#000000" />
+          <g class="pause">
+            <rect x="14" y="12" width="4" height="16" fill="#000000" />
+            <rect x="22" y="12" width="4" height="16" fill="#000000" />
+          </g>
+        </svg>
+      </button>
+      <div class="dots"></div>
+    </div>
+  </div>
+
+
+
+
+
+  <div class="container">
+    <div class="canvas-container">
+      <canvas id="hero-lightpass"> </canvas>
+      <h2 id="c">Elite Custom</h2>
+    </div>
+  </div>
+
+
+
+  <section id="services" class="services animated">
+    <h2>Our Services</h2>
+    <div class="services-grid animated">
+      <div class="service-card">
+        <h3>Service 1</h3>
+        <p>Description of our first amazing service</p>
+      </div>
+      <div class="service-card">
+        <h3>Service 2</h3>
+        <p>Description of our second amazing service</p>
+      </div>
+      <div class="service-card">
+        <h3>Service 3</h3>
+        <p>Description of our third amazing service</p>
+      </div>
+      <div class="service-card">
+        <h3>Service 3</h3>
+        <p>Description of our third amazing service</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="welcome fade-in-section">
+    <a href="{% url 'contact' %}">
+      <button type="button" class="btn btn-outline-dark">Contact</button>
+    </a>
+    <a href="{% url 'about' %}">
+      <button type="button" class="btn btn-outline-dark">About us</button>
+    </a>
+  </div>
+
+  <div class="carousel-section mb-5 animated">
+    <h1 class="section-title">Kitchens, Bathrooms and Fireplaces</h1>
+
+    <div class="carousel-wrapper animated">
+      <button class="arrow-btn arrow-left">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m15 18-6-6 6-6" />
+        </svg>
+      </button>
+
+      <div class="products-container animated">
+        <div class="products-wrapper">
+          <div class="product-card">
+            <img
+              src="https://plus.unsplash.com/premium_photo-1683133810804-1f25805038ac?q=80&w=1769&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="kitchen2" class="product-image" />
+          </div>
+          <div class="product-card">
+            <img
+              src="https://plus.unsplash.com/premium_photo-1683140737975-762028aff484?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="kitchen2" class="product-image" />
+          </div>
+          <div class="product-card">
+            <img
+              src="https://images.unsplash.com/photo-1620626011761-996317b8d101?q=80&w=1769&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="kitchen4" class="product-image" />
+          </div>
+          <div class="product-card">
+            <img
+              src="https://images.unsplash.com/photo-1600488999585-e4364713b90a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="kitchen5" class="product-image" />
+          </div>
+          <div class="product-card">
+            <img
+              src="https://images.unsplash.com/photo-1613688684111-5c197974be20?q=80&w=1772&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="kitchen5" class="product-image" />
+          </div>
+          <div class="product-card">
+            <img
+              src="https://plus.unsplash.com/premium_photo-1681487208776-e308bfaa0539?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="kitchen5" class="product-image" />
+          </div>
+          <div class="product-card">
+            <img
+              src="https://images.unsplash.com/photo-1595514535116-d0401260e7cf?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="kitchen5" class="product-image" />
+          </div>
+          <div class="product-card">
+            <img
+              src="https://images.unsplash.com/photo-1564540579594-0930edb6de43?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="kitchen5" class="product-image" />
+          </div>
+        </div>
+      </div>
+
+      <button class="arrow-btn arrow-right">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m9 18 6-6-6-6" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="carousel-section mb-5 animated">
+    <h1 class="section-title">
+      Insipre by our amazingcountertops and see our materials
+    </h1>
+
+    <div class="carousel-wrapper animated">
+      <button class="arrow-btn arrow-left">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m15 18-6-6 6-6" />
+        </svg>
+      </button>
+
+      <div class="products-container animated">
+        <div class="products-wrapper">
+          <div class="product-card">
+            <img
+              src="https://images.unsplash.com/photo-1587177139620-987629766ec7?q=80&w=1840&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="kitchen2" class="product-image" />
+            <div class="card-content">
+              <h2 class="card-title">Quartz</h2>
+              <p class="card-description">
+                Timeless Elegance, beautiful,modern
+              </p>
+            </div>
+            <div class="bottom-bar">
+              <img
+                src="https://images.unsplash.com/photo-1566041510394-cf7c8fe21800?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                alt="
+                ..." class="circle-image" />
+            </div>
+          </div>
+
+          <div class="product-card">
+            <img
+              src="https://plus.unsplash.com/premium_photo-1676321688600-7e4d0f08d1c8?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="kitchen2" class="product-image" />
+            <div class="card-content">
+              <h2 class="card-title">Granite</h2>
+              <p class="card-description">
+                Timeless Elegance, beautiful,modern
+              </p>
+            </div>
+            <div class="bottom-bar">
+              <img
+                src="https://images.unsplash.com/photo-1699982758974-0703b87f052d?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D alt="
+                alt="..." class="circle-image" />
+            </div>
+          </div>
+          <div class="product-card">
+            <img
+              src="https://images.unsplash.com/photo-1565538810643-b5bdb714032a?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="kitchen4" class="product-image" />
+            <div class="card-content">
+              <h2 class="card-title">Quartz</h2>
+              <p class="card-description">
+                Timeless Elegance, beautiful,modern
+              </p>
+            </div>
+            <div class="bottom-bar">
+              <img
+                src="https://plus.unsplash.com/premium_photo-1707074549389-9f86dfed404b?q=80&w=1925&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                alt="
+                ..." class="circle-image" />
+            </div>
+          </div>
+          <div class="product-card">
+            <img
+              src="https://images.unsplash.com/photo-1564540579594-0930edb6de43?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="kitchen5" class="product-image" />
+            <div class="card-content">
+              <h2 class="card-title">Quartz</h2>
+              <p class="card-description">
+                Timeless Elegance, beautiful,modern
+              </p>
+            </div>
+            <div class="bottom-bar">
+              <img
+                src="https://images.unsplash.com/photo-1566041510394-cf7c8fe21800?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D""
+                alt=" ..." class="circle-image" />
+            </div>
+          </div>
+          <div class="product-card">
+            <img
+              src="https://plus.unsplash.com/premium_photo-1680382578871-32ce66f9ae25?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="kitchen5" class="product-image" />
+            <div class="card-content">
+              <h2 class="card-title">Quartz</h2>
+              <p class="card-description">
+                Timeless Elegance, beautiful,modern
+              </p>
+            </div>
+            <div class="bottom-bar">
+              <img
+                src="https://images.unsplash.com/photo-1566041510394-cf7c8fe21800?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D""
+                alt=" ..." class="circle-image" />
+            </div>
+          </div>
+          <div class="product-card">
+            <img
+              src="https://plus.unsplash.com/premium_photo-1680382578871-32ce66f9ae25?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="kitchen5" class="product-image" />
+            <div class="card-content">
+              <h2 class="card-title">Quartz</h2>
+              <p class="card-description">
+                Timeless Elegance, beautiful,modern
+              </p>
+            </div>
+            <div class="bottom-bar">
+              <img
+                src="https://images.unsplash.com/photo-1566041510394-cf7c8fe21800?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D""
+                alt=" ..." class="circle-image" />
+            </div>
+          </div>
+          <div class="product-card">
+            <img
+              src="https://plus.unsplash.com/premium_photo-1680382578871-32ce66f9ae25?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="kitchen5" class="product-image" />
+            <div class="card-content">
+              <h2 class="card-title">Quartz</h2>
+              <p class="card-description">
+                Timeless Elegance, beautiful,modern
+              </p>
+            </div>
+            <div class="bottom-bar">
+              <img
+                src="https://images.unsplash.com/photo-1566041510394-cf7c8fe21800?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D""
+                alt=" ..." class="circle-image" />
+            </div>
+          </div>
+          <div class="product-card">
+            <img
+              src="https://images.unsplash.com/photo-1591924450983-b8f7587ea332?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="kitchen5" class="product-image" />
+            <div class="card-content">
+              <h2 class="card-title">Quartz</h2>
+              <p class="card-description">
+                Timeless Elegance, beautiful,modern
+              </p>
+            </div>
+            <div class="bottom-bar">
+              <img
+                src="https://images.unsplash.com/photo-1566041510394-cf7c8fe21800?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D""
+                alt=" ..." class="circle-image" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="arrow-btn arrow-right">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m9 18 6-6-6-6" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="explore-container animated">
+    <h2 class="explore-title animated">Explore more about us</h2>
+    <p class="explore-text animated">
+      We are passionate about creating unique and custom countertops, and we
+      pride ourselves on quality and craftsmanship. Our team works tirelessly
+      to bring your vision to life. We work with premium materials for every
+      home , we've teamed up with Cambria to ensure your countertops are
+      crafted with the highest quality materials, guaranteeing lasting
+      durability and timeless beauty.
+    </p>
+  </div>
+
+  <div class="services-container animated">
+    <div class="cardsservices">
+      <div class="cardsservices-content">
+        <h3>Transform Your Space</h3>
+        <p class="cardsservices-description">
+          Every great transformation begins with a single step.Make big steps!
+        </p>
+      </div>
+    </div>
+    <div class="cardsservices">
+      <div class="cardsservices-content">
+        <h3>Elevate your home with timeless elegance</h3>
+        <p class="cardsservices-description">
+          Choose countertops that not only look stunning but also stand the
+          test of time
+        </p>
+      </div>
+    </div>
+    <div class="cardsservices">
+      <div class="cardsservices-content">
+        <h3>Elevate Your Everyday</h3>
+        <p class="cardsservices-description">
+          Your home should be a reflection of your unique style and
+          personality.
+        </p>
+      </div>
+    </div>
+    <div class="cardsservices">
+      <div class="cardsservices-content">
+        <h3>Craft your perfect space with us</h3>
+        <p class="cardsservices-description">
+          Collaborate with our experts to design a space that reflects your
+          unique style
+        </p>
+      </div>
+    </div>
+    <div class="cardsservices">
+      <div class="cardsservices-content">
+        <h3>Dream Big, Renovate Boldly</h3>
+        <p class="cardsservices-description">
+          Don’t just dream about the perfect home—make it happen! Our team is
+          here to guide you.
+        </p>
+      </div>
+    </div>
+    <div class="cardsservices">
+      <div class="cardsservices-content">
+        <h3>Beauty and durability in every surface</h3>
+        <p class="cardsservices-description">
+          Our countertops combine aesthetic appeal with strength, ensuring
+          they look great and last long.
+        </p>
+      </div>
+    </div>
+    <div class="cardsservices">
+      <div class="cardsservices-content">
+        <h3>Quality That Lasts</h3>
+        <p class="cardsservices-description">
+          Invest in quality that for your time. Our custom countertops are
+          crafted to bring elegance to your home.
+        </p>
+      </div>
+    </div>
+    <div class="cardsservices">
+      <div class="cardsservices-content">
+        <h3>Invest in your happiness</h3>
+        <p class="cardsservices-description">
+          Discover countertops that not only enhance the beauty of your home
+          but also provide practical solutions for everyday use.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="explore-container animated">
+    <h2 class="explore-title animated">We work for you</h2>
+    <p class="explore-text animated">
+      We are passionate about creating unique and custom countertops, and we
+      pride ourselves on quality and craftsmanship. Our team works tirelessly
+      to bring your vision to life. We work with premium materials for every
+      home , we've teamed up with Cambria to ensure your countertops are
+      crafted with the highest quality materials, guaranteeing lasting
+      durability and timeless beauty.
+    </p>
+  </div>
+
+
+
+
+  <div class="matitle animated">
+    <h2>We work with the best materials</h2>
+  </div>
+  <div class="materials animated">
+    <div class="card">
+      <img
+        src="https://images.unsplash.com/photo-1566041510394-cf7c8fe21800?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        alt="quartz" />
+      <div class="card-body">
+        <h3>Quartz</h3>
+
+        <p class="card-text">
+          Resistant to stains and scratches, quartz provides a worry-free
+          surface that combines elegance with everyday functionality.With a
+          wide array of colors and patterns, quartz countertops bring lasting
+          beauty and easy maintenance to any kitchen or bathroom.
+        </p>
+        <p class="card-extra">
+          <img class="svg-icon" src="{% static 'logos/star-sharp-svgrepo-com.svg' %}" alt="Star Icon" />
+          <span>Quartz countertops offer a stunning, modern aesthetic with
+            exceptional durability, making them a beautiful and practical
+            choice.</span>
+        </p>
+      </div>
+    </div>
+    <div class="card">
+      <img
+        src="https://images.unsplash.com/photo-1699982758974-0703b87f052d?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        alt="granite" />
+      <div class="card-body">
+        <h3>Granite</h3>
+        <p class="card-text">
+          Known for its exceptional heat resistance and durability, granite
+          provides a long-lasting and functional surface for cooking and food
+          preparation. With a variety of colors and patterns, granite offers a
+          luxurious and enduring option, creating a stunning focal point in
+          your home.
+        </p>
+        <p class="card-extra">
+          <img class="svg-icon" src="{% static 'logos/star-sharp-svgrepo-com.svg' %}" alt="Star Icon" />
+          <span>Granite countertops boast a unique, natural beauty and add a
+            touch of timeless elegance to any kitchen.</span>
+        </p>
+      </div>
+    </div>
+    <div class="card">
+      <img
+        src="https://plus.unsplash.com/premium_photo-1707074549389-9f86dfed404b?q=80&w=1925&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        alt="quartzite" />
+      <div class="card-body">
+        <h3>Quartzite</h3>
+        <p class="card-text">
+          Highly resistant to heat, scratches, and UV light, quartzite
+          provides a long-lasting and low-maintenance surface for both
+          kitchens and bathrooms. With its marble-like appearance and
+          impressive resistance to etching and staining (when properly
+          sealed), quartzite countertops add value and elegance to any home.
+        </p>
+        <p class="card-extra">
+          <img class="svg-icon" src="{% static 'logos/star-sharp-svgrepo-com.svg' %}" alt="Star Icon" />
+          <span>Quartzite countertops offer a unique blend of natural beauty and
+            exceptional durability, making them a sought-after choice for
+            homeowners.</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <section class="video-showcase animated">
+    <div class="video-controls">
+      <button class="video-nav prev">
+        <svg width="24" height="24" viewBox="0 0 24 24">
+          <path d="M15 18l-6-6 6-6" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </button>
+      <button class="video-nav next">
+        <svg width="24" height="24" viewBox="0 0 24 24">
+          <path d="M9 18l6-6-6-6" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="video-carousel">
+      <div class="video-slide active">
+        <div class="video-content">
+          <video src="{% static 'v/v1.mp4' %}" poster="{% static 'img/bathrooms3.jpg' %}"></video>
+          <div class="video-overlay">
+            <h2>Craftsmanship in Detail</h2>
+            <button class="play-button">
+              <span class="play-icon"></span>
+              Watch the Process
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="video-slide">
+        <div class="video-content">
+          <video src="{% static 'v/v1.mp4' %}" poster="{% static 'img/bathrooms5.jpg' %}"></video>
+          <div class="video-overlay">
+            <h2>Design Excellence</h2>
+            <button class="play-button">
+              <span class="play-icon"></span>
+              See Our Vision
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="video-slide">
+        <div class="video-content">
+          <video src="{% static 'v/v1.mp4' %}" poster="{% static 'img/bathrooms3.jpg' %}"></video>
+          <div class="video-overlay">
+            <h2>Perfect Installation</h2>
+            <button class="play-button">
+              <span class="play-icon"></span>
+              Watch Installation
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="explore-container animated">
+    <h2 class="explore-title animated">Transform your home and your life</h2>
+    <p class="explore-text animated">
+      Experience top-notch craftsmanship with our comprehensive services. We
+      redefine your living spaces in Tampa Bay with meticulous artistry,
+      unique designs, and personalized renovations.
+    </p>
+  </div>
+
+  <div class="welcome fade-in-section">
+    <a href="{% url 'contact' %}">
+      <button type="button" class="btn btn-outline-dark">Contact</button></a>
+      <a href="{% url 'about' %}">
+      <button type="button" class="btn btn-outline-dark">About us</button>
+    </a>
+  </div>
+
+  <div class="contenedor-cards">
+    <h2>Why Choose Us</h2>
+    <div class="cards">
+      <div class="card">
+        <h3 class="card-title">
+          <img src="{% static 'logos/professional-svgrepo-com.svg' %}" alt="Installation Icon" class="card-icon" />
+          Expert Installation
+        </h3>
+        <p>
+          Our skilled team ensures precise and professional countertop
+          installation for lasting quality.
+        </p>
+      </div>
+      <div class="card">
+        <h3 class="card-title">
+          <img src="{% static 'logos/tower-svgrepo-com.svg' %}" alt="Selection Icon" class="card-icon" />
+          Wide Selection
+        </h3>
+        <p>
+          We offer a diverse range of countertop materials, colors, and styles
+          to suit your unique taste.
+        </p>
+      </div>
+      <div class="card">
+        <h3 class="card-title">
+          <img src="{% static 'logos/home-svgrepo-com.svg' %}" alt="Pricing Icon" class="card-icon" />
+          Competitive Pricing
+        </h3>
+        <p>
+          Get the best value for your investment with our competitive pricing
+          and transparent quotes.
+        </p>
+      </div>
+      <div class="card">
+        <h3 class="card-title">
+          <img src="{% static 'logos/user-heart-svgrepo-com.svg' %}" alt="Quality Icon" class="card-icon" />
+          Quality Materials
+        </h3>
+        <p>
+          We source only the highest quality materials to ensure your
+          countertops are durable and beautiful.
+        </p>
+      </div>
+      <div class="card">
+        <h3 class="card-title">
+          <img src="{% static 'logos/quality-report-svgrepo-com.svg' %}" alt="Satisfaction Icon" class="card-icon" />
+          Customer Satisfaction
+        </h3>
+        <p>
+          Your satisfaction is our top priority. We are dedicated to providing
+          exceptional service every step of the way.
+        </p>
+      </div>
+      <div class="card">
+        <h3 class="card-title">
+          <img src="{% static 'logos/design-svgrepo-com.svg' %}" alt="Experience Icon" class="card-icon" />
+          Years of Experience
+        </h3>
+        <p>
+          Benefit from our years of experience in the countertop industry,
+          guaranteeing expertise and reliability.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <section class="container4 animated">
+    <div class="testimonial mySwiper">
+      <div class="testi-content swiper-wrapper">
+        <div class="slide swiper-slide">
+          <img src="{% static 'images/img1.jpg' %}" alt="" class="image" />
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam,
+            saepe provident dolorem a quaerat quo error facere nihil deleniti
+            eligendi ipsum adipisci, fugit, architecto amet asperiores
+            doloremque deserunt eum nemo.
+          </p>
+
+          <i class="bx bxs-quote-alt-left quote-icon"></i>
+
+          <div class="details">
+            <span class="name">Marnie Lotter</span>
+            <span class="job">Web Developer</span>
+          </div>
+        </div>
+        <div class="slide swiper-slide">
+          <img src="{% static 'images/img2.jpg' %}" alt="" class="image" />
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam,
+            saepe provident dolorem a quaerat quo error facere nihil deleniti
+            eligendi ipsum adipisci, fugit, architecto amet asperiores
+            doloremque deserunt eum nemo.
+          </p>
+
+          <i class="bx bxs-quote-alt-left quote-icon"></i>
+
+          <div class="details">
+            <span class="name">Marnie Lotter</span>
+            <span class="job">Web Developer</span>
+          </div>
+        </div>
+        <div class="slide swiper-slide">
+          <img src="{% static 'images/img3.jpg' %}" alt="" class="image" />
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam,
+            saepe provident dolorem a quaerat quo error facere nihil deleniti
+            eligendi ipsum adipisci, fugit, architecto amet asperiores
+            doloremque deserunt eum nemo.
+          </p>
+
+          <i class="bx bxs-quote-alt-left quote-icon"></i>
+
+          <div class="details">
+            <span class="name">Marnie Lotter</span>
+            <span class="job">Web Developer</span>
+          </div>
+        </div>
+      </div>
+      <div class="swiper-button-next nav-btn"></div>
+      <div class="swiper-button-prev nav-btn"></div>
+      <div class="swiper-pagination"></div>
+    </div>
+  </section>
+
+  <div class="welcome fade-in-section">
+    <a href="{% url 'comments' %}">
+      <button type="button" class="btn btn-outline-dark">
+        Leave your opinion
+      </button>
+    </a>
+  </div>
+
+  <footer>
+    <div class="footer-container animated">
+      <!-- Logo Section -->
+      <div class="logo-section">
+        <div class="logo">
+          <i data-feather="code" class="logo-icon"></i>
+          <span class="logo-text">Company Name</span>
+        </div>
+        <p class="logo-description">Elite Custom Countertops</p>
+      </div>
+
+      <!-- Quick Links Section -->
+      <div class="quick-links">
+        <h3>Quick Links</h3>
+        <ul>
+          <li>
+            <i data-feather="chevron-right"></i>
+            <a href="#">Home</a>
+          </li>
+          <li>
+            <i data-feather="chevron-right"></i>
+            <a href="{% url 'about' %}"> About us</a>
+          </li>
+          <li>
+            <i data-feather="chevron-right"></i>
+            <a href="{% url 'comments' %}">Reviews</a>
+          </li>
+          <li>
+            <i data-feather="chevron-right"></i>
+            <a href="{% url 'contact' %}">Contact</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Social and Contact Section -->
+      <div class="social-contact">
+        <!-- Social Media Links -->
+        <div class="social-links">
+          <a href="#" class="social-icon">
+            <i data-feather="facebook"></i>
+          </a>
+          <a href="#" class="social-icon">
+            <i data-feather="instagram"></i>
+          </a>
+          <a href="#" class="social-icon">
+            <i data-feather="twitter"></i>
+          </a>
+        </div>
+
+        <!-- Divider -->
+        <div class="divider"></div>
+
+        <!-- Contact Information -->
+        <div class="contact-info">
+          <a href="tel:+1234567890" class="contact-item">
+            <i data-feather="phone"></i>
+            <span>+1 (234) 567-890</span>
+          </a>
+          <a href="mailto:contact@example.com" class="contact-item">
+            <i data-feather="mail"></i>
+            <span>contact@example.com</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Copyright Section -->
+    <div class="copyright">
+      <div class="divider"></div>
+      <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Initialize Feather Icons
+    feather.replace();
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+    integrity="sha384-oBqDVmMz4fnFO9gybZ0y5Fh+Q6Y5fQ7z7Y5Fq4aP8mU4c7Wk8U4Ff3c8r5g+z9Q" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-+lD0D0tYt1HqC6g+R9M2GZKZp1HqC6g+R9M2GZKZp1HqC6g+R9M2GZKZp1HqC6g+"
+    crossorigin="anonymous"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+
+
+  <script>
+    var swiper = new Swiper(".mySwiper", {
+      slidesPerView: 1,
+      grabCursor: true,
+      loop: true,
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+      },
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+
+
+    });
+  </script>
+
+
+</body>
+
+</html>
