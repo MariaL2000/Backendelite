@@ -37,7 +37,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def validate_client_name(self, value):
         if len(value) < 8:
-            raise serializers.ValidationError('Client name must be at least 5 characters long.')
+            raise serializers.ValidationError('Client name must be at least 8 characters long.')
         return value
 
     def validate_email(self, value):
