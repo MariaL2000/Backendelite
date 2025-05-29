@@ -30,6 +30,45 @@ from django.db.models import ImageField
 
 
 
+#vista de contacto
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def contact_api(request):
+    serializer = OrderSerializer(data=request.data)
+    if serializer.is_valid():
+        order = serializer.save()
+        order_details = (
+            f"Name: {order.client_name}\n"
+            f"Email: {order.email}\n"
+            f"Phone: {order.phone}\n"
+            f"Address: {order.address}\n"
+            f"Project Details: {order.description}\n"
+        )
+        
+        try:
+            send_mail(
+                subject="New Order Received",
+                message=f"New order details:\n\n{order_details}",
+                from_email="mariamarreromedrano@gmail.com",
+                recipient_list=["mariamarreromedrano@gmail.com"],
+                fail_silently=False,
+            )
+            send_mail(
+                subject="Your Order Confirmation",
+                message=f"Dear {order.client_name},\n\n{order_details}",
+                from_email="mariamarreromedrano@gmail.com",
+                recipient_list=[order.email],
+                fail_silently=False,
+            )
+            
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
 
 #vista de reviews
 @api_view(['GET', 'POST'])
@@ -139,128 +178,87 @@ def confirm_page_api(request, order_id):
 
 
 
-def get_active_config():
-    """Obtiene la configuración activa o crea una nueva"""
-    return SiteConfiguration.objects.filter(is_active=True).first() or SiteConfiguration.objects.create()
-
-
+def get_active_configs():
+    """Return all active configurations ordered by most recent"""
+    return SiteConfiguration.objects.filter(is_active=True).order_by('-updated_at')
 
 
 def serve_default_image(request, field_name):
-    """Sirve directamente una imagen predeterminada"""
-    # Ruta a la imagen predeterminada
-    image_path = os.path.join(settings.BASE_DIR, 'static', 'default_images', f'default_{field_name}.jpg')
+    """Serve image from static/default_images"""
+    # Check for admin uploaded image first
+    config = get_active_configs()
+    image_field = getattr(config, field_name, None)
     
-    if os.path.exists(image_path):
-        return FileResponse(open(image_path, 'rb'), content_type='image/jpeg')
+    if image_field and bool(image_field):
+        image_path = os.path.join(settings.BASE_DIR, 'static', 'default_images', os.path.basename(image_field.name))
+        if os.path.exists(image_path):
+            return FileResponse(open(image_path, 'rb'), content_type='image/jpeg')
+
+    # Fallback to default
+    default_path = os.path.join(settings.BASE_DIR, 'static', 'default_images', f'default_{field_name}.jpg')
+    if os.path.exists(default_path):
+        return FileResponse(open(default_path, 'rb'), content_type='image/jpeg')
     
-    # Si no existe, usar un placeholder
+    # Final fallback
     placeholder_path = os.path.join(settings.BASE_DIR, 'static', 'default_images', 'placeholder.jpg')
     if os.path.exists(placeholder_path):
         return FileResponse(open(placeholder_path, 'rb'), content_type='image/jpeg')
     
-    return HttpResponse("Imagen no encontrada", status=404)
+    return HttpResponse("Image not found", status=404)
+
+
+
+
+
+
+
+
+
+
+def merge_images_from_configs(request, configs, field_name):
+    """Get image from most recent config that has it, or default"""
+    for config in configs:
+        image = getattr(config, field_name, None)
+        if image and bool(image):
+            return get_safe_image_url(request, config, field_name)
+    return get_safe_image_url(request, configs[0], field_name)  # Default fallback
+
+
+
+
+
+
 
 
 
 def get_safe_image_url(request, config, field_name):
-    """Obtiene URL segura de imagen con fallback a default"""
+    """Get image URL with proper fallback logic"""
+    # Check active configs first
     image_field = getattr(config, field_name, None)
-    
-    # CASO 1: Imagen subida por el administrador
-    if image_field and hasattr(image_field, 'url') and bool(image_field):
-        try:
-            # Verificar si el archivo existe en el disco
-            if os.path.exists(image_field.path):
-                # Esta URL apunta a MEDIA_URL (imágenes subidas)
-                return request.build_absolute_uri(image_field.url)
-        except (ValueError, FileNotFoundError, AttributeError):
-            pass
-    
-    # CASO 2: Usar la vista personalizada que sabemos que funciona
-    return request.build_absolute_uri(f"/default-image/{field_name}/")
+    if image_field and bool(image_field):
+        return request.build_absolute_uri(f'/static/default_images/{os.path.basename(image_field.name)}')
 
+    # Try default image
+    default_name = f'default_{field_name}.jpg'
+    possible_paths = [
+        os.path.join(settings.STATIC_ROOT, 'default_images', default_name),
+        os.path.join(settings.BASE_DIR, 'static', 'default_images', default_name),
+    ]
 
+    for path in possible_paths:
+        if os.path.exists(path):
+            return request.build_absolute_uri(f'/static/default_images/{default_name}')
 
+    # Final fallback
+    return request.build_absolute_uri('/static/default_images/placeholder.jpg')
 
-
-
-
-
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def about_api(request):
-    try:
-        config = get_active_config()
-        response_data = {
-            'success': True,
-            'data': {
-                'company_pictures': [
-                    get_safe_image_url(request, config, f'company_picture_{i}')
-                    for i in range(1, 6)
-                ],
-                'team': {
-                    'admin': get_safe_image_url(request, config, 'admin_perfil'),
-                    'admin_2': get_safe_image_url(request, config, 'admin_2_perfil'),
-                    'architect': get_safe_image_url(request, config, 'architect')
-                },
-                'metadata': {
-                    'last_updated': config.updated_at.isoformat()
-                }
-            }
-        }
-        response = Response(response_data)
-        response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-        return response
-    except Exception as e:
-        return Response({'success': False, 'error': str(e)}, status=500)
-
-
-
-
-
-
-    
-
-
-
-
-#vista de contacto
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def contact_api(request):
-    serializer = OrderSerializer(data=request.data)
-    if serializer.is_valid():
-        order = serializer.save()
-        order_details = (
-            f"Name: {order.client_name}\n"
-            f"Email: {order.email}\n"
-            f"Phone: {order.phone}\n"
-            f"Address: {order.address}\n"
-            f"Project Details: {order.description}\n"
-        )
-        
-        try:
-            send_mail(
-                subject="New Order Received",
-                message=f"New order details:\n\n{order_details}",
-                from_email="mariamarreromedrano@gmail.com",
-                recipient_list=["mariamarreromedrano@gmail.com"],
-                fail_silently=False,
-            )
-            send_mail(
-                subject="Your Order Confirmation",
-                message=f"Dear {order.client_name},\n\n{order_details}",
-                from_email="mariamarreromedrano@gmail.com",
-                recipient_list=[order.email],
-                fail_silently=False,
-            )
-            
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+def get_most_recent_image(configs, field_name):
+    """Get most recent non-null image from configs"""
+    for config in configs:
+        image = getattr(config, field_name, None)
+        if image and bool(image):
+            return image
+    return None
 
 
 
@@ -275,40 +273,89 @@ def contact_api(request):
 @permission_classes([AllowAny])
 def gallery_api(request):
     try:
-        config = get_active_config()
-        response_data = {
+        configs = get_active_configs()
+        if not configs:
+            configs = [SiteConfiguration.objects.create()]
+
+        gallery_data = []
+        categories = [
+            ('bathrooms', 'bathroom', 10),
+            ('kitchens', 'kitchen', 10),
+            ('fireplaces', 'fireplace', 10)
+        ]
+
+        for category_name, prefix, count in categories:
+            images = []
+            for i in range(1, count + 1):
+                field_name = f'{prefix}_{i}'
+                # Try to get image from each config
+                image_url = None
+                for config in configs:
+                    if getattr(config, field_name, None):
+                        image_url = get_safe_image_url(request, config, field_name)
+                        break
+                if not image_url:
+                    image_url = get_safe_image_url(request, configs[0], field_name)
+                images.append({'image': image_url})
+            
+            gallery_data.append({
+                'category': category_name,
+                'images': images
+            })
+
+        return Response({
             'success': True,
-            'data': [
-    {
-        'category': 'bathrooms',
-        'images': [
-            {'image': get_safe_image_url(request, config, f'bathroom_{i}')}
-            for i in range(1, 11)
-        ]
-    },
-    {
-        'category': 'kitchens',
-        'images': [
-            {'image': get_safe_image_url(request, config, f'kitchen_{i}')}
-            for i in range(1, 11)
-        ]
-    },
-    {
-        'category': 'fireplaces',
-        'images': [
-            {'image': get_safe_image_url(request, config, f'fireplace_{i}')}
-            for i in range(1,11)
-        ]
-    }
-]
-,
-            'metadata': {
-                'last_updated': config.updated_at.isoformat()
+            'data': gallery_data
+        })
+    except Exception as e:
+        return Response({'success': False, 'error': str(e)}, status=500)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def about_api(request):
+    try:
+        configs = get_active_configs()
+        if not configs:
+            configs = [SiteConfiguration.objects.create()]
+
+        company_pictures = []
+        team_images = []
+
+        # Process company pictures
+        for i in range(1, 6):
+            field_name = f'company_picture_{i}'
+            url = None
+            for config in configs:
+                if getattr(config, field_name, None):
+                    url = get_safe_image_url(request, config, field_name)
+                    break
+            if not url:
+                url = get_safe_image_url(request, configs[0], field_name)
+            company_pictures.append(url)
+
+        # Process team images
+        team_fields = ['admin_perfil', 'admin_2_perfil', 'architect']
+        for field_name in team_fields:
+            url = None
+            for config in configs:
+                if getattr(config, field_name, None):
+                    url = get_safe_image_url(request, config, field_name)
+                    break
+            if not url:
+                url = get_safe_image_url(request, configs[0], field_name)
+            team_images.append(url)
+
+        return Response({
+            'success': True,
+            'data': {
+                'company_pictures': company_pictures,
+                'team': {
+                    'admin': team_images[0],
+                    'admin_2': team_images[1],
+                    'architect': team_images[2]
+                }
             }
-        }
-        response = Response(response_data)
-        response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-        return response
+        })
     except Exception as e:
         return Response({'success': False, 'error': str(e)}, status=500)
 
@@ -316,65 +363,62 @@ def gallery_api(request):
 @permission_classes([AllowAny])
 def index_api(request):
     try:
-        config = get_active_config()
-        response_data = {
+        configs = get_active_configs()
+        if not configs:
+            configs = [SiteConfiguration.objects.create()]
+
+        # Get carousel images
+        carousel = []
+        for i in range(1, 4):
+            field_name = f'image_carrousel_{i}'
+            url = None
+            for config in configs:
+                if getattr(config, field_name, None):
+                    url = get_safe_image_url(request, config, field_name)
+                    break
+            if not url:
+                url = get_safe_image_url(request, configs[0], field_name)
+            carousel.append(url)
+
+        # Get materials images
+        materials = {}
+        for material in ['granite', 'quartz', 'quartzite']:
+            materials[material] = []
+            for i in range(1, 3):
+                field_name = f'{material}_countertop_{i}'
+                url = None
+                for config in configs:
+                    if getattr(config, field_name, None):
+                        url = get_safe_image_url(request, config, field_name)
+                        break
+                if not url:
+                    url = get_safe_image_url(request, configs[0], field_name)
+                materials[material].append(url)
+
+        # Get before/after images
+        before_after = {}
+        for field in ['image_before', 'image_after']:
+            url = None
+            for config in configs:
+                if getattr(config, field, None):
+                    url = get_safe_image_url(request, config, field)
+                    break
+            if not url:
+                url = get_safe_image_url(request, configs[0], field)
+            before_after[field.split('_')[1]] = url
+
+        return Response({
             'success': True,
             'data': {
-                'carousel': [
-                    get_safe_image_url(request, config, 'image_carrousel_1'),
-                    get_safe_image_url(request, config, 'image_carrousel_2'),
-                    get_safe_image_url(request, config, 'image_carrousel_3')
-                ],
-                'materials': {
-                    'granite': [
-                        get_safe_image_url(request, config, 'granite_countertop_1'),
-                        get_safe_image_url(request, config, 'granite_countertop_2')
-                    ],
-                    'quartz': [
-                        get_safe_image_url(request, config, 'quartz_countertop_1'),
-                        get_safe_image_url(request, config, 'quartz_countertop_2')
-                    ],
-                    'quartzite': [
-                        get_safe_image_url(request, config, 'quartzite_countertop_1'),
-                        get_safe_image_url(request, config, 'quartzite_countertop_2')
-                    ]
-                },
-                'comparison': {
-                    'before_after': {
-                        'before': get_safe_image_url(request, config, 'image_before'),
-                        'after': get_safe_image_url(request, config, 'image_after')
-                    },
-                    'scrollable': [
-                        get_safe_image_url(request, config, 'image_scrolleable_1'),
-                        get_safe_image_url(request, config, 'image_scrolleable_2'),
-                        get_safe_image_url(request, config, 'image_scrolleable_3')
-                    ]
-                },
+                'carousel': carousel,
+                'materials': materials,
+                'comparison': {'before_after': before_after},
                 'colors': {
-                    # Pass the color values directly - they'll be None if not set
-                    # React will handle the default colors on the frontend
-                    'primary': config.primary_color,
-                    'secondary': config.secondary_color,
-                    'buttons': config.buttons_color
-                },
-                'metadata': {
-                    'last_updated': config.updated_at.isoformat(),
-                    'has_custom_images': any(
-                        bool(getattr(config, f.name))
-                        for f in config._meta.get_fields()
-                        if isinstance(f, ImageField) and hasattr(config, f.name)
-                    )
+                    'primary': configs[0].primary_color,
+                    'secondary': configs[0].secondary_color,
+                    'buttons': configs[0].buttons_color
                 }
             }
-        }
-        response = Response(response_data)
-        response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-        return response
+        })
     except Exception as e:
         return Response({'success': False, 'error': str(e)}, status=500)
-
-
-
-
-
-

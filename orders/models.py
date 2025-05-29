@@ -3,10 +3,22 @@ from django.core.exceptions import ValidationError
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from colorfield.fields import ColorField
+from django.core.files.storage import FileSystemStorage
 import os
-from django.core.files.storage import default_storage
-from django.db import transaction
+from django.utils import timezone
 
+class StaticStorage(FileSystemStorage):
+    def __init__(self):
+        super().__init__(
+            location=os.path.join(settings.BASE_DIR, 'static', 'default_images'),
+            base_url='/static/default_images/'
+        )
+        
+    def url(self, name):
+        """Return URL for both uploaded and default images"""
+        if not name:
+            name = f'default_{self.field_name}.jpg'
+        return f'{self.base_url}{name}'
 
 THEME_COLORS = [
     ('#007BFFFF', 'Blue'),
@@ -88,7 +100,7 @@ class Order(models.Model):
     class Meta:
         verbose_name = ('List of orders')
         verbose_name_plural = ('List of orders')
-        ordering = ['-date']
+        ordering = ['date']
 
 
     def save(self, *args, **kwargs):
@@ -156,90 +168,127 @@ class SiteConfiguration(models.Model):
     
     
     #las 3 primeras son para gallery
-    bathroom_1 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    bathroom_2 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    bathroom_3 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    bathroom_4 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    bathroom_5 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    bathroom_6 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    bathroom_7 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    bathroom_8 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    bathroom_9 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    bathroom_10 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
+    bathroom_1 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    bathroom_2 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    bathroom_3 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    bathroom_4 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    bathroom_5 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    bathroom_6 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    bathroom_7 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    bathroom_8 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    bathroom_9 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    bathroom_10 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
 
-    kitchen_1 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    kitchen_2 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    kitchen_3 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    kitchen_4 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    kitchen_5 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    kitchen_6 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    kitchen_7 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    kitchen_8 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    kitchen_9 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    kitchen_10 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
+    kitchen_1 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    kitchen_2 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    kitchen_3 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    kitchen_4 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    kitchen_5 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    kitchen_6 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    kitchen_7 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    kitchen_8 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    kitchen_9 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    kitchen_10 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
 
-    fireplace_1 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    fireplace_2 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    fireplace_3 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    fireplace_4 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    fireplace_5 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    fireplace_6 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    fireplace_7 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    fireplace_8 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    fireplace_9 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    fireplace_10 = models.ImageField(upload_to='backgrounds/', blank=True, null=True)
+    
+    fireplace_1 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    fireplace_2 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    fireplace_3 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    fireplace_4 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    fireplace_5 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    fireplace_6 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    fireplace_7 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    fireplace_8 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    fireplace_9 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    fireplace_10 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+
 
     #para el index
-    image_carrousel_1= models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    image_carrousel_2= models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    image_carrousel_3= models.ImageField(upload_to='backgrounds/', blank=True, null=True)
+    image_carrousel_1 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    image_carrousel_2 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    image_carrousel_3 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    
+    granite_countertop_1 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    granite_countertop_2 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    quartz_countertop_1 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    quartz_countertop_2 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    quartzite_countertop_1 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    quartzite_countertop_2 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
 
-    #para el carrousel infinito
-    granite_countertop_1= models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    granite_countertop_2= models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    quartz_countertop_1= models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    quartz_countertop_2= models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    quartzite_countertop_1= models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    quartzite_countertop_2= models.ImageField(upload_to='backgrounds/', blank=True, null=True)
 
     #para la imagen before after y las scrolleables
-    image_before= models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    image_after= models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    image_scrolleable_1= models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    image_scrolleable_2= models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    image_scrolleable_3= models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-
+    image_before = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    image_after = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
 
 
 
 
 #para el about
-    admin_perfil= models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    admin_2_perfil= models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    architect= models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    company_picture_1= models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    company_picture_2= models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    company_picture_3= models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    company_picture_4= models.ImageField(upload_to='backgrounds/', blank=True, null=True)
-    company_picture_5= models.ImageField(upload_to='backgrounds/', blank=True, null=True)
+    admin_perfil = models.ImageField(storage=StaticStorage(),blank=True, null=True
+    )
+    admin_2_perfil = models.ImageField(
+        storage=StaticStorage(),
+        blank=True, 
+        null=True
+    )
+    architect = models.ImageField(
+        storage=StaticStorage(),
+        blank=True, 
+        null=True
+    )
+    company_picture_1 = models.ImageField(
+        storage=StaticStorage(),
+        blank=True, 
+        null=True
+    )
+    company_picture_2 = models.ImageField(
+        storage=StaticStorage(),
+        blank=True, 
+        null=True
+    )
+    company_picture_3 = models.ImageField(
+        storage=StaticStorage(),
+        blank=True, 
+        null=True
+    )
 
 
+
+
+
+    @classmethod
+    def get_latest_images(cls):
+        """Get most recent non-null images from active configurations"""
+        latest_config = {}
+        active_configs = cls.objects.filter(is_active=True).order_by('-updated_at')
+        
+        for field in cls._meta.fields:
+            if isinstance(field, models.ImageField):
+                field_name = field.name
+                # Get first non-null value for each image field
+                image = (
+                    active_configs
+                    .exclude(**{field_name: ''})
+                    .exclude(**{field_name: None})
+                    .values_list(field_name, flat=True)
+                    .first()
+                )
+                if image:
+                    latest_config[field_name] = image
+        
+        return latest_config
 
 
     
     def save(self, *args, **kwargs):
-        """Al guardar una nueva configuración, desactiva las anteriores"""
-        if not self.pk:  # Solo para nuevas configuraciones
-            SiteConfiguration.objects.filter(is_active=True).update(is_active=False)
+        self.updated_at = timezone.now()
         super().save(*args, **kwargs)
-    
-    def __str__(self):
-        return "Site configuration"
-    
+
     class Meta:
         verbose_name = "Update images"
         verbose_name_plural = "Update images"
         ordering = ['-updated_at']
+
 
     
 

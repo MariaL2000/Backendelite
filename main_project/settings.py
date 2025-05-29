@@ -15,7 +15,7 @@ load_dotenv()
 STATIC_VERSION = int(time.time())
 
 
-
+SITE_CONFIG_STORAGE = 'orders.storage.StaticStorage'
 
 DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'  
 

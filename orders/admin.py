@@ -1,6 +1,7 @@
 from django.utils import timezone
 from django.contrib import admin
 from django.shortcuts import redirect, render, get_object_or_404
+from django.conf import settings
 from django.urls import reverse, path
 from django.utils.html import format_html
 from django.http import HttpResponse
@@ -14,6 +15,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from django.db.models import ImageField
 from django.core.files.storage import default_storage
+import os
 
 
  
@@ -369,13 +371,7 @@ class SiteConfigurationAdmin(admin.ModelAdmin):
             )
         }),
         
-        ("Scrollable Images", {
-            "fields": (
-                "image_scrolleable_1",
-                "image_scrolleable_2",
-                "image_scrolleable_3",
-            )
-        }),
+       
         
         ("Bathroom Gallery", {
             "classes": ("collapse",),
@@ -398,7 +394,6 @@ class SiteConfigurationAdmin(admin.ModelAdmin):
             "classes": ("collapse",),
             "fields": (
                 ("company_picture_1", "company_picture_2", "company_picture_3"),
-                ("company_picture_4", "company_picture_5"),
                 ("admin_perfil", "admin_2_perfil", "architect"),
             )
         }),
@@ -431,18 +426,29 @@ class SiteConfigurationAdmin(admin.ModelAdmin):
     activate_config.short_description = "Activate configuration"
 
     def delete_model(self, request, obj):
-        """Elimina una configuración y sus archivos asociados"""
-        # Eliminar archivos físicos
-        for field in obj._meta.get_fields():
-            if isinstance(field, ImageField):
-                if file := getattr(obj, field.name):
-                    if default_storage.exists(file.name):
-                        default_storage.delete(file.name)
-        # Eliminar registro de la BD
-        super().delete_model(request, obj)
+        """Delete configuration and associated files"""
+        try:
+            # Delete files from static storage
+            for field in obj._meta.get_fields():
+                if isinstance(field, ImageField):
+                    file = getattr(obj, field.name)
+                    if file:
+                        # Try static storage first
+                        static_path = os.path.join(settings.STATIC_ROOT, 'default_images', os.path.basename(file.name))
+                        if os.path.exists(static_path):
+                            os.remove(static_path)
+                            
+                        # Also check media storage
+                        if default_storage.exists(file.name):
+                            default_storage.delete(file.name)
+                            
+            # Delete database record
+            super().delete_model(request, obj)
+        except Exception as e:
+            self.message_user(request, f"Error deleting files: {str(e)}", level='ERROR')
 
     def delete_queryset(self, request, queryset):
-        """Eliminación masiva para acciones de admin"""
+        """Bulk delete from admin actions"""
         for obj in queryset:
             self.delete_model(request, obj)
-        self.message_user(request, f"{queryset.count()} configuraciones eliminadas")
+            
