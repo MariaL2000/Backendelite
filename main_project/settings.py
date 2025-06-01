@@ -247,24 +247,19 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINGS = True
 
 CORS_ALLOWED_ORIGINS = [
-    "https://localhost:3000",
-    "https://127.0.0.1:3000",
-    "http://localhost:3000", 
-    "http://127.0.0.1:3000",
-    "https://localhost:5173",  
-    "https://127.0.0.1:5173",
-    "https://localhost:5173",
-    "https://marial2000.github.io"
+
+    "https://localhost:5173", 
+    "https://marial2000.github.io",
+    "http://localhost:5173/Elite-custom", 
+    "http://localhost:5173/"
 
 ]
 
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://elite-frontend.onrender.com",
-    'https://localhost:3000',
-    'http://localhost:3000',
-    'https://127.0.0.1:3000',
-    'http://127.0.0.1:3000',
+    "http://localhost:5173/Elite-custom", 
+    "http://localhost:5173/",
+
     "https://localhost:5173",
     "https://marial2000.github.io"
 ]
