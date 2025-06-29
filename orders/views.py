@@ -5,7 +5,7 @@ from .serializers import (
     CommentSerializer, 
     OrderSerializer, 
     ScheduleSerializer,
-    SiteConfigurationSerializer
+    
 )
 
 from django.core.exceptions import ValidationError
@@ -25,6 +25,53 @@ from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAdminUser
 from rest_framework.decorators import api_view, permission_classes
 from django.db.models import ImageField
+
+
+
+
+def get_active_configs():
+    """Return all active configurations ordered by most recent"""
+    return SiteConfiguration.objects.filter(is_active=True).order_by('-updated_at')
+
+
+
+
+
+
+def merge_images_from_configs(request, configs, field_name):
+    """Get image from most recent config that has it, or default"""
+    for config in configs:
+        image = getattr(config, field_name, None)
+        if image and bool(image):
+            return get_safe_image_url(request, config, field_name)
+    return get_safe_image_url(request, configs[0], field_name)  # Default fallback
+
+
+
+
+
+
+
+
+def get_safe_image_url(request, config, field_name):
+    url = getattr(config, f'{field_name}_url', None)
+    if url:
+        return url
+
+
+def get_most_recent_image(configs, field_name):
+    """Get most recent non-null image from configs"""
+    for config in configs:
+        image = getattr(config, field_name, None)
+        if image and bool(image):
+            return image
+    return None
+
+
+
+
+
+
 
 
 
@@ -170,95 +217,6 @@ def confirm_page_api(request, order_id):
 
 
 
-
-
-
-
-
-
-
-
-def get_active_configs():
-    """Return all active configurations ordered by most recent"""
-    return SiteConfiguration.objects.filter(is_active=True).order_by('-updated_at')
-
-
-def serve_default_image(request, field_name):
-    """Serve image from static/default_images"""
-    # Check for admin uploaded image first
-    config = get_active_configs()
-    image_field = getattr(config, field_name, None)
-    
-    if image_field and bool(image_field):
-        image_path = os.path.join(settings.BASE_DIR, 'static', 'default_images', os.path.basename(image_field.name))
-        if os.path.exists(image_path):
-            return FileResponse(open(image_path, 'rb'), content_type='image/jpeg')
-
-    # Fallback to default
-    default_path = os.path.join(settings.BASE_DIR, 'static', 'default_images', f'default_{field_name}.jpg')
-    if os.path.exists(default_path):
-        return FileResponse(open(default_path, 'rb'), content_type='image/jpeg')
-    
-    # Final fallback
-    placeholder_path = os.path.join(settings.BASE_DIR, 'static', 'default_images', 'placeholder.jpg')
-    if os.path.exists(placeholder_path):
-        return FileResponse(open(placeholder_path, 'rb'), content_type='image/jpeg')
-    
-    return HttpResponse("Image not found", status=404)
-
-
-
-
-
-
-
-
-
-
-def merge_images_from_configs(request, configs, field_name):
-    """Get image from most recent config that has it, or default"""
-    for config in configs:
-        image = getattr(config, field_name, None)
-        if image and bool(image):
-            return get_safe_image_url(request, config, field_name)
-    return get_safe_image_url(request, configs[0], field_name)  # Default fallback
-
-
-
-
-
-
-
-
-
-def get_safe_image_url(request, config, field_name):
-    """Get image URL with proper fallback logic"""
-    # Check active configs first
-    image_field = getattr(config, field_name, None)
-    if image_field and bool(image_field):
-        return request.build_absolute_uri(f'/static/default_images/{os.path.basename(image_field.name)}')
-
-    # Try default image
-    default_name = f'default_{field_name}.jpg'
-    possible_paths = [
-        os.path.join(settings.STATIC_ROOT, 'default_images', default_name),
-        os.path.join(settings.BASE_DIR, 'static', 'default_images', default_name),
-    ]
-
-    for path in possible_paths:
-        if os.path.exists(path):
-            return request.build_absolute_uri(f'/static/default_images/{default_name}')
-
-    # Final fallback
-    return request.build_absolute_uri('/static/default_images/placeholder.jpg')
-
-def get_most_recent_image(configs, field_name):
-    """Get most recent non-null image from configs"""
-    for config in configs:
-        image = getattr(config, field_name, None)
-        if image and bool(image):
-            return image
-    return None
 
 
 

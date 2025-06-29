@@ -9,7 +9,7 @@ urlpatterns = [
     path('api/confirm/<int:order_id>/', views.confirm_page_api, name='contact_page'),#esta vista tmb sera en react
 
     # React API Endpoints
-    path('default-image/<str:field_name>/', views.serve_default_image, name='serve_default_image'),
+    
     path('api/comments/', views.comments_api, name='comments_api'),
     path('api/contact/', views.contact_api, name='contact_api'),
     path('api/index/', views.index_api, name='index_api'),

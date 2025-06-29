@@ -6,6 +6,8 @@ from colorfield.fields import ColorField
 from django.core.files.storage import FileSystemStorage
 import os
 from django.utils import timezone
+from cloudinary.models import CloudinaryField
+import cloudinary.uploader
 
 class StaticStorage(FileSystemStorage):
     def __init__(self):
@@ -131,13 +133,21 @@ class Schedule(models.Model):
         unique_together = ['date', 'time_slot']
 
 
+
+THEME_COLORS = [
+    ('#FF5733', 'Red'),
+    ('#33FF57', 'Green'),
+    # Agrega otros colores aquí
+]
+
 class SiteConfiguration(models.Model):
+    # Colores principales y secundarios
     primary_color = ColorField(
         choices=[('', '---------')] + THEME_COLORS, 
         format="hexa",
         null=True,
         blank=True,
-        default=None ,
+        default=None,
         help_text=('Main brand color used throughout the site') 
     )
     secondary_color = ColorField(
@@ -145,7 +155,6 @@ class SiteConfiguration(models.Model):
         format="hexa",
         null=True,
         blank=True,
-        
         default=None,
         help_text=('Secondary color for accents and highlights')
     )
@@ -158,104 +167,113 @@ class SiteConfiguration(models.Model):
         help_text=('Color for all action buttons')
     )
 
-
-
-
+    # Otros campos de configuración
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True, help_text="Configuración actualmente activa")
     
-  
-    
-    
-    #las 3 primeras son para gallery
-    bathroom_1 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    bathroom_2 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    bathroom_3 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    bathroom_4 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    bathroom_5 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    bathroom_6 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    bathroom_7 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    bathroom_8 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    bathroom_9 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    bathroom_10 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    # Campos de imágenes para diferentes secciones (bathroom, kitchen, etc.)
+    bathroom_1_url = models.URLField(blank=True, null=True)
+    bathroom_1_public_id = models.CharField(max_length=255, blank=True, null=True)
+    bathroom_2_url = models.URLField(blank=True, null=True)
+    bathroom_2_public_id = models.CharField(max_length=255, blank=True, null=True)
+    bathroom_3_url = models.URLField(blank=True, null=True)
+    bathroom_3_public_id = models.CharField(max_length=255, blank=True, null=True)
+    bathroom_4_url = models.URLField(blank=True, null=True)
+    bathroom_4_public_id = models.CharField(max_length=255, blank=True, null=True)
+    bathroom_5_url = models.URLField(blank=True, null=True)
+    bathroom_5_public_id = models.CharField(max_length=255, blank=True, null=True)
+    bathroom_6_url = models.URLField(blank=True, null=True)
+    bathroom_6_public_id = models.CharField(max_length=255, blank=True, null=True)
+    bathroom_7_url = models.URLField(blank=True, null=True)
+    bathroom_7_public_id = models.CharField(max_length=255, blank=True, null=True)
+    bathroom_8_url = models.URLField(blank=True, null=True)
+    bathroom_8_public_id = models.CharField(max_length=255, blank=True, null=True)
+    bathroom_9_url = models.URLField(blank=True, null=True)
+    bathroom_9_public_id = models.CharField(max_length=255, blank=True, null=True)
+    bathroom_10_url = models.URLField(blank=True, null=True)
+    bathroom_10_public_id = models.CharField(max_length=255, blank=True, null=True)
 
-    kitchen_1 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    kitchen_2 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    kitchen_3 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    kitchen_4 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    kitchen_5 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    kitchen_6 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    kitchen_7 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    kitchen_8 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    kitchen_9 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    kitchen_10 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    kitchen_1_url = models.URLField(blank=True, null=True)
+    kitchen_1_public_id = models.CharField(max_length=255, blank=True, null=True)
+    kitchen_2_url = models.URLField(blank=True, null=True)
+    kitchen_2_public_id = models.CharField(max_length=255, blank=True, null=True)
+    kitchen_3_url = models.URLField(blank=True, null=True)
+    kitchen_3_public_id = models.CharField(max_length=255, blank=True, null=True)
+    kitchen_4_url = models.URLField(blank=True, null=True)
+    kitchen_4_public_id = models.CharField(max_length=255, blank=True, null=True)
+    kitchen_5_url = models.URLField(blank=True, null=True)
+    kitchen_5_public_id = models.CharField(max_length=255, blank=True, null=True)
+    kitchen_6_url = models.URLField(blank=True, null=True)
+    kitchen_6_public_id = models.CharField(max_length=255, blank=True, null=True)
+    kitchen_7_url = models.URLField(blank=True, null=True)
+    kitchen_7_public_id = models.CharField(max_length=255, blank=True, null=True)
+    kitchen_8_url = models.URLField(blank=True, null=True)
+    kitchen_8_public_id = models.CharField(max_length=255, blank=True, null=True)
+    kitchen_9_url = models.URLField(blank=True, null=True)
+    kitchen_9_public_id = models.CharField(max_length=255, blank=True, null=True)
+    kitchen_10_url = models.URLField(blank=True, null=True)
+    kitchen_10_public_id = models.CharField(max_length=255, blank=True, null=True)
 
-    
-    fireplace_1 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    fireplace_2 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    fireplace_3 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    fireplace_4 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    fireplace_5 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    fireplace_6 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    fireplace_7 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    fireplace_8 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    fireplace_9 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    fireplace_10 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    fireplace_1_url = models.URLField(blank=True, null=True)
+    fireplace_1_public_id = models.CharField(max_length=255, blank=True, null=True)
+    fireplace_2_url = models.URLField(blank=True, null=True)
+    fireplace_2_public_id = models.CharField(max_length=255, blank=True, null=True)
+    fireplace_3_url = models.URLField(blank=True, null=True)
+    fireplace_3_public_id = models.CharField(max_length=255, blank=True, null=True)
+    fireplace_4_url = models.URLField(blank=True, null=True)
+    fireplace_4_public_id = models.CharField(max_length=255, blank=True, null=True)
+    fireplace_5_url = models.URLField(blank=True, null=True)
+    fireplace_5_public_id = models.CharField(max_length=255, blank=True, null=True)
+    fireplace_6_url = models.URLField(blank=True, null=True)
+    fireplace_6_public_id = models.CharField(max_length=255, blank=True, null=True)
+    fireplace_7_url = models.URLField(blank=True, null=True)
+    fireplace_7_public_id = models.CharField(max_length=255, blank=True, null=True)
+    fireplace_8_url = models.URLField(blank=True, null=True)
+    fireplace_8_public_id = models.CharField(max_length=255, blank=True, null=True)
+    fireplace_9_url = models.URLField(blank=True, null=True)
+    fireplace_9_public_id = models.CharField(max_length=255, blank=True, null=True)
+    fireplace_10_url = models.URLField(blank=True, null=True)
+    fireplace_10_public_id = models.CharField(max_length=255, blank=True, null=True)
 
+    image_carrousel_1_url = models.URLField(blank=True, null=True)
+    image_carrousel_1_public_id = models.CharField(max_length=255, blank=True, null=True)
+    image_carrousel_2_url = models.URLField(blank=True, null=True)
+    image_carrousel_2_public_id = models.CharField(max_length=255, blank=True, null=True)
+    image_carrousel_3_url = models.URLField(blank=True, null=True)
+    image_carrousel_3_public_id = models.CharField(max_length=255, blank=True, null=True)
 
-    #para el index
-    image_carrousel_1 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    image_carrousel_2 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    image_carrousel_3 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    
-    granite_countertop_1 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    granite_countertop_2 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    quartz_countertop_1 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    quartz_countertop_2 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    quartzite_countertop_1 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    quartzite_countertop_2 = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    granite_countertop_1_url = models.URLField(blank=True, null=True)
+    granite_countertop_1_public_id = models.CharField(max_length=255, blank=True, null=True)
+    granite_countertop_2_url = models.URLField(blank=True, null=True)
+    granite_countertop_2_public_id = models.CharField(max_length=255, blank=True, null=True)
+    quartz_countertop_1_url = models.URLField(blank=True, null=True)
+    quartz_countertop_1_public_id = models.CharField(max_length=255, blank=True, null=True)
+    quartz_countertop_2_url = models.URLField(blank=True, null=True)
+    quartz_countertop_2_public_id = models.CharField(max_length=255, blank=True, null=True)
+    quartzite_countertop_1_url = models.URLField(blank=True, null=True)
+    quartzite_countertop_1_public_id = models.CharField(max_length=255, blank=True, null=True)
+    quartzite_countertop_2_url = models.URLField(blank=True, null=True)
+    quartzite_countertop_2_public_id = models.CharField(max_length=255, blank=True, null=True)
 
+    image_before_url = models.URLField(blank=True, null=True)
+    image_before_public_id = models.CharField(max_length=255, blank=True, null=True)
+    image_after_url = models.URLField(blank=True, null=True)
+    image_after_public_id = models.CharField(max_length=255, blank=True, null=True)
 
-    #para la imagen before after y las scrolleables
-    image_before = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
-    image_after = models.ImageField(storage=StaticStorage(), upload_to='', blank=True, null=True)
+    admin_perfil_url = models.URLField(blank=True, null=True)
+    admin_perfil_public_id = models.CharField(max_length=255, blank=True, null=True)
+    admin_2_perfil_url = models.URLField(blank=True, null=True)
+    admin_2_perfil_public_id = models.CharField(max_length=255, blank=True, null=True)
+    architect_url = models.URLField(blank=True, null=True)
+    architect_public_id = models.CharField(max_length=255, blank=True, null=True)
+    company_picture_1_url = models.URLField(blank=True, null=True)
+    company_picture_1_public_id = models.CharField(max_length=255, blank=True, null=True)
+    company_picture_2_url = models.URLField(blank=True, null=True)
+    company_picture_2_public_id = models.CharField(max_length=255, blank=True, null=True)
+    company_picture_3_url = models.URLField(blank=True, null=True)
+    company_picture_3_public_id = models.CharField(max_length=255, blank=True, null=True)
 
-
-
-
-#para el about
-    admin_perfil = models.ImageField(storage=StaticStorage(),blank=True, null=True
-    )
-    admin_2_perfil = models.ImageField(
-        storage=StaticStorage(),
-        blank=True, 
-        null=True
-    )
-    architect = models.ImageField(
-        storage=StaticStorage(),
-        blank=True, 
-        null=True
-    )
-    company_picture_1 = models.ImageField(
-        storage=StaticStorage(),
-        blank=True, 
-        null=True
-    )
-    company_picture_2 = models.ImageField(
-        storage=StaticStorage(),
-        blank=True, 
-        null=True
-    )
-    company_picture_3 = models.ImageField(
-        storage=StaticStorage(),
-        blank=True, 
-        null=True
-    )
-
-
-
-
-
+    # Método para obtener las imágenes más recientes
     @classmethod
     def get_latest_images(cls):
         """Get most recent non-null images from active configurations"""
@@ -278,9 +296,69 @@ class SiteConfiguration(models.Model):
         
         return latest_config
 
-
-    
+    # Método para guardar las imágenes en Cloudinary
     def save(self, *args, **kwargs):
+        image_fields = [
+        # Bathroom
+        'bathroom_1_url', 'bathroom_2_url', 'bathroom_3_url', 'bathroom_4_url', 'bathroom_5_url',
+        'bathroom_6_url', 'bathroom_7_url', 'bathroom_8_url', 'bathroom_9_url', 'bathroom_10_url',
+
+        # Kitchen
+        'kitchen_1_url', 'kitchen_2_url', 'kitchen_3_url', 'kitchen_4_url', 'kitchen_5_url',
+        'kitchen_6_url', 'kitchen_7_url', 'kitchen_8_url', 'kitchen_9_url', 'kitchen_10_url',
+
+        # Fireplace
+        'fireplace_1_url', 'fireplace_2_url', 'fireplace_3_url', 'fireplace_4_url', 'fireplace_5_url',
+        'fireplace_6_url', 'fireplace_7_url', 'fireplace_8_url', 'fireplace_9_url', 'fireplace_10_url',
+
+        # Carrousel
+        'image_carrousel_1_url', 'image_carrousel_2_url', 'image_carrousel_3_url',
+
+        # Countertops
+        'granite_countertop_1_url', 'granite_countertop_2_url',
+        'quartz_countertop_1_url', 'quartz_countertop_2_url',
+        'quartzite_countertop_1_url', 'quartzite_countertop_2_url',
+
+        # Before & After
+        'image_before_url', 'image_after_url',
+
+        # Admin & staff
+        'admin_perfil_url', 'admin_2_perfil_url', 'architect_url',
+
+        # Company pictures
+        'company_picture_1_url', 'company_picture_2_url', 'company_picture_3_url',
+    ]
+
+        
+        for field in image_fields:
+         url_field = f"{field}_url"
+         public_id_field = f"{field}_public_id"
+        
+         current_public_id = getattr(self, public_id_field, None)
+         new_image = getattr(self, field)  # Aquí new_image debería ser un archivo (FileField) o ruta local
+        
+         # Si tienes una imagen nueva para subir (puede ser un archivo o path)
+         if new_image:
+            try:
+                # Si había una imagen subida antes, elimínala de Cloudinary
+                if current_public_id:
+                    cloudinary.uploader.destroy(current_public_id)
+                
+                # Sube la nueva imagen a Cloudinary
+                result = cloudinary.uploader.upload(new_image)
+                
+                # Actualiza los campos URL y public_id con la nueva info
+                setattr(self, url_field, result.get('secure_url'))
+                setattr(self, public_id_field, result.get('public_id'))
+                
+                # Si es archivo local, opcionalmente lo borras
+                if hasattr(new_image, 'delete'):
+                    new_image.delete(save=False)
+            
+            except Exception as e:
+                print(f"Error gestionando imagen {field}: {e}")
+
+        # No olvides actualizar updated_at si lo usas
         self.updated_at = timezone.now()
         super().save(*args, **kwargs)
 
@@ -290,7 +368,6 @@ class SiteConfiguration(models.Model):
         ordering = ['-updated_at']
 
 
-    
 
 
     

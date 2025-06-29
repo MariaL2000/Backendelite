@@ -83,3 +83,4 @@ class SiteConfigurationSerializer(serializers.ModelSerializer):
         El frontend manejará los NULL como colores por defecto.
         """
         return super().to_representation(instance)
+    

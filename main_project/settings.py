@@ -2,7 +2,7 @@
 
 from pathlib import Path
 import os
-from decouple import Config, Csv
+from decouple import Config
 import time
 from dotenv import load_dotenv
 import logging
@@ -95,15 +95,22 @@ INSTALLED_APPS = [
     'colorfield',
  'corsheaders',
     'orders',
+        'cloudinary',
+    'cloudinary_storage',
 ]
 
 
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': Config('CLOUD_NAME'),
+    'API_KEY': Config('API_KEY'),
+    'API_SECRET': Config('API_SECRET'),
+}
 
 
-
-
+print("Cloudinary Key:", os.environ.get('API_KEY'))  # o config('API_KEY')
 
 
 
@@ -247,24 +254,17 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINGS = True
 
 CORS_ALLOWED_ORIGINS = [
-    "https://localhost:3000",
-    "https://127.0.0.1:3000",
-    "http://localhost:3000", 
-    "http://127.0.0.1:3000",
-    "https://localhost:5173",  
-    "https://127.0.0.1:5173",
-    "https://localhost:5173",
-    "https://marial2000.github.io"
+    "https://localhost:5173", 
+    "https://marial2000.github.io",
+    "http://localhost:5173", 
+    "http://localhost:5173"
 
 ]
 
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://elite-frontend.onrender.com",
-    'https://localhost:3000',
-    'http://localhost:3000',
-    'https://127.0.0.1:3000',
-    'http://127.0.0.1:3000',
+    "http://localhost:5173/Elite-custom", 
+    "http://localhost:5173",
     "https://localhost:5173",
     "https://marial2000.github.io"
 ]
@@ -343,12 +343,13 @@ DATABASES = {
         'NAME': os.environ.get('DB_NAME'),
         'USER': os.environ.get('DB_USER'),
         'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': os.environ.get('DB_HOST') + '.virginia-postgres.render.com',  # Add full domain
+        'HOST': os.environ.get('DB_HOST'),  # Add full domain
         'PORT': os.environ.get('DB_PORT', '5432'),
         'OPTIONS': {
             'sslmode': 'require',
         }
-    }
+        
+}
 }
 
 
@@ -425,7 +426,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 
 

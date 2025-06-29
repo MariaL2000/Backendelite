@@ -16,9 +16,13 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, 
 from django.db.models import ImageField
 from django.core.files.storage import default_storage
 import os
+from .models import SiteConfiguration
+from django.db import models
+from cloudinary.uploader import upload
+from .form import SiteConfigurationForm
 
 
- 
+
 @admin.register(Schedule)
 class ScheduleAdmin(admin.ModelAdmin):
     serializer_class = ScheduleSerializer
@@ -321,81 +325,65 @@ class CommentAdmin(admin.ModelAdmin):
         return self.serializer_class(*args, **kwargs)
 
 
-
-
-
 @admin.register(SiteConfiguration)
 class SiteConfigurationAdmin(admin.ModelAdmin):
+    form = SiteConfigurationForm
     serializer_class = SiteConfigurationSerializer
     list_display = ("primary_color", "secondary_color", "buttons_color", "updated_at", "is_active")
     list_filter = ("updated_at", "is_active")
     ordering = ("-updated_at",)
     save_on_top = True
     actions = ["activate_config"]
-    
-    # Campos editables directamente en el listado
     list_editable = ("is_active",)
-    
-    # Añadir botón de eliminación personalizado
+
     def get_list_display_links(self, request, list_display):
-        return ["id"]  # Hacer clickable solo el ID
-    
+        return ["id"]
+
     fieldsets = (
         ("Color Settings", {
             "classes": ("collapse",),
-            "fields": (
-                ("primary_color", "secondary_color", "buttons_color"),
-            )
+            "fields": ("primary_color", "secondary_color", "buttons_color"),
         }),
         ("Main Carousel", {
             "fields": (
-                "image_carrousel_1",
-                "image_carrousel_2",
-                "image_carrousel_3",
-            )
+                "image_carrousel_1", "image_carrousel_2", "image_carrousel_3",
+                "image_carrousel_1_url", "image_carrousel_2_url", "image_carrousel_3_url",
+            ),
         }),
-        
         ("Material Showcase", {
             "classes": ("collapse",),
             "fields": (
                 ("granite_countertop_1", "granite_countertop_2"),
+                ("granite_countertop_1_url", "granite_countertop_2_url"),
                 ("quartz_countertop_1", "quartz_countertop_2"),
+                ("quartz_countertop_1_url", "quartz_countertop_2_url"),
                 ("quartzite_countertop_1", "quartzite_countertop_2"),
-            )
+                ("quartzite_countertop_1_url", "quartzite_countertop_2_url"),
+            ),
         }),
-        
         ("Comparison Section", {
-            "fields": (
-                "image_before",
-                "image_after",
-            )
+            "fields": ("image_before", "image_after", "image_before_url", "image_after_url"),
         }),
-        
-       
-        
         ("Bathroom Gallery", {
             "classes": ("collapse",),
-            "fields": [f"bathroom_{i}" for i in range(1, 11)],
+            "fields": [f"bathroom_{i}" for i in range(1, 11)] + [f"bathroom_{i}_url" for i in range(1, 11)],
         }),
-        
         ("Kitchen Gallery", {
             "classes": ("collapse",),
-            "fields": [f"kitchen_{i}" for i in range(1, 11)],
+            "fields": [f"kitchen_{i}" for i in range(1, 11)] + [f"kitchen_{i}_url" for i in range(1, 11)],
         }),
-        
         ("Fireplace Gallery", {
             "classes": ("collapse",),
-            "fields": [f"fireplace_{i}" for i in range(1, 11)],
+            "fields": [f"fireplace_{i}" for i in range(1, 11)] + [f"fireplace_{i}_url" for i in range(1, 11)],
         }),
-        
-        
-        
         ("About Us Page", {
             "classes": ("collapse",),
             "fields": (
-                ("company_picture_1", "company_picture_2", "company_picture_3"),
-                ("admin_perfil", "admin_2_perfil", "architect"),
-            )
+                "company_picture_1", "company_picture_2", "company_picture_3",
+                "company_picture_1_url", "company_picture_2_url", "company_picture_3_url",
+                "admin_perfil", "admin_2_perfil", "architect",
+                "admin_perfil_url", "admin_2_perfil_url", "architect_url",
+            ),
         }),
     )
 
@@ -403,52 +391,56 @@ class SiteConfigurationAdmin(admin.ModelAdmin):
         return self.serializer_class(*args, **kwargs)
 
     def save_model(self, request, obj, form, change):
-        """Guarda solo campos modificados y actualiza timestamps"""
-        if change:
-            original = SiteConfiguration.objects.get(pk=obj.pk)
-            for field_name in form.changed_data:
-                field = obj._meta.get_field(field_name)
-                if isinstance(field, ImageField):
-                    old_file = getattr(original, field_name)
-                    if old_file:
-                        old_file.delete(save=False)
-        
+        uploadable_fields = [
+            "image_carrousel_1", "image_carrousel_2", "image_carrousel_3",
+            "granite_countertop_1", "granite_countertop_2",
+            "quartz_countertop_1", "quartz_countertop_2",
+            "quartzite_countertop_1", "quartzite_countertop_2",
+            "image_before", "image_after",
+            *[f"bathroom_{i}" for i in range(1, 11)],
+            *[f"kitchen_{i}" for i in range(1, 11)],
+            *[f"fireplace_{i}" for i in range(1, 11)],
+            "company_picture_1", "company_picture_2", "company_picture_3",
+            "admin_perfil", "admin_2_perfil", "architect",
+        ]
+
+        for base_field in uploadable_fields:
+            file = form.cleaned_data.get(base_field)
+            if file:
+                url_field = f"{base_field}_url"
+                public_id_field = f"{base_field}_public_id"
+                try:
+                    result = upload(file)
+                    setattr(obj, url_field, result.get("secure_url"))
+                    setattr(obj, public_id_field, result.get("public_id"))
+                except Exception as e:
+                    self.message_user(request, f"Error uploading {base_field} to Cloudinary: {e}", level='ERROR')
+
         obj.updated_at = timezone.now()
         super().save_model(request, obj, form, change)
 
     def activate_config(self, request, queryset):
-        """Activa una configuración específica"""
         config = queryset.first()
         SiteConfiguration.objects.filter(is_active=True).update(is_active=False)
         config.is_active = True
         config.save()
         self.message_user(request, f"Configuración {config.id} activada")
+
     activate_config.short_description = "Activate configuration"
 
     def delete_model(self, request, obj):
-        """Delete configuration and associated files"""
         try:
-            # Delete files from static storage
-            for field in obj._meta.get_fields():
-                if isinstance(field, ImageField):
-                    file = getattr(obj, field.name)
-                    if file:
-                        # Try static storage first
-                        static_path = os.path.join(settings.STATIC_ROOT, 'default_images', os.path.basename(file.name))
-                        if os.path.exists(static_path):
-                            os.remove(static_path)
-                            
-                        # Also check media storage
-                        if default_storage.exists(file.name):
-                            default_storage.delete(file.name)
-                            
-            # Delete database record
+            for field in obj._meta.fields:
+                if field.name.endswith('_public_id'):
+                    public_id = getattr(obj, field.name)
+                    if public_id and default_storage.exists(public_id):
+                        default_storage.delete(public_id)
             super().delete_model(request, obj)
         except Exception as e:
             self.message_user(request, f"Error deleting files: {str(e)}", level='ERROR')
 
     def delete_queryset(self, request, queryset):
-        """Bulk delete from admin actions"""
         for obj in queryset:
             self.delete_model(request, obj)
+
             
