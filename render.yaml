@@ -29,6 +29,6 @@ services:
     healthCheckPath: /admin/login/
 
   - type: postgresql
-    name: elitedb_3o6d
+    name: elitedb_d3uk
     plan: free
     ipAllowList: []

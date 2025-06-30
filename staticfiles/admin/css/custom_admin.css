@@ -1,0 +1,16 @@
+.dashboard .app-orders .app-icon {
+    font-size: 24px;
+    color: #2c3e50;
+    margin-right: 10px;
+}
+
+.model-orders .model-icon {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+}
+
+.app-orders .model-order .model-icon { color: #3498db; }
+.app-orders .model-schedule .model-icon { color: #2ecc71; }
+.app-orders .model-comment .model-icon { color: #f1c40f; }
+.app-orders .model-siteconfiguration .model-icon { color: #9b59b6; }

@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Comment, Order, Schedule, SiteConfiguration, Client
 import re
 from django.core.validators import validate_email
+from cloudinary.models import CloudinaryField
 
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
@@ -57,30 +58,53 @@ class OrderSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Description is required.')
         return value
 
+
+
 class SiteConfigurationSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteConfiguration
         fields = '__all__'
-
-    def validate(self, data):
-        existing_config = SiteConfiguration.objects.first()
-        if existing_config and self.instance is None:
-            raise serializers.ValidationError("Only one configuration instance is allowed.")
-        return data
-    
-    def to_internal_value(self, data):
-        """
-        Asegura que los campos vacíos se guarden como NULL en la base de datos.
-        """
-        for field in ['primary_color', 'secondary_color', 'buttons_color']:
-            if field in data and data[field] == '':
-                data[field] = None  # Convierte campos vacíos a NULL
-        return super().to_internal_value(data)
+        read_only_fields = ('updated_at',)
 
     def to_representation(self, instance):
-        """
-        Devuelve los valores exactos de la base de datos (incluso si son NULL).
-        El frontend manejará los NULL como colores por defecto.
-        """
-        return super().to_representation(instance)
-    
+        """Convert Cloudinary fields to URLs and handle colors"""
+        ret = super().to_representation(instance)
+        
+        # Handle Cloudinary fields
+        for field in instance._meta.fields:
+            if isinstance(field, CloudinaryField):
+                value = getattr(instance, field.name)
+                if value:
+                    ret[field.name] = value.url
+                else:
+                    ret[field.name] = None
+
+        # Handle color fields
+        color_fields = ['primary_color', 'secondary_color', 'buttons_color']
+        for field in color_fields:
+            if field in ret and ret[field] == '':
+                ret[field] = None
+
+        return ret
+
+    def to_internal_value(self, data):
+        """Handle empty color fields"""
+        color_fields = ['primary_color', 'secondary_color', 'buttons_color']
+        for field in color_fields:
+            if field in data and data[field] == '':
+                data[field] = None
+        return super().to_internal_value(data)
+
+    def validate_color_field(self, value, field_name):
+        """Validate color format"""
+        if value and not value.startswith('#'):
+            raise serializers.ValidationError(f"{field_name} must be a valid hex color")
+        return value
+
+    def validate(self, data):
+        """Validate color fields"""
+        color_fields = ['primary_color', 'secondary_color', 'buttons_color']
+        for field in color_fields:
+            if field in data:
+                self.validate_color_field(data[field], field)
+        return data

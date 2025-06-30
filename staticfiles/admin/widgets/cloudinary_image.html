@@ -1,0 +1,18 @@
+<div class="cloudinary-field">
+  {% if widget.current_image %}
+  <div class="current-preview">
+      <p>Current image:</p>
+      <img src="{{ widget.current_image }}" style="max-width:200px;">
+  </div>
+  {% endif %}
+  
+  {% if widget.active_previews %}
+  <div class="active-previews">
+      <p>Images from active configurations:</p>
+      {{ widget.active_previews }}
+  </div>
+  {% endif %}
+  
+  <input type="{{ widget.type }}" name="{{ widget.name }}"
+         {% include "django/forms/widgets/attrs.html" %}>
+</div>

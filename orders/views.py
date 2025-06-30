@@ -22,55 +22,36 @@ from urllib.parse import quote
 
 from rest_framework.permissions import AllowAny
 
-from rest_framework.permissions import IsAdminUser
 from rest_framework.decorators import api_view, permission_classes
-from django.db.models import ImageField
-
 
 
 
 def get_active_configs():
-    """Return all active configurations ordered by most recent"""
+    """Return all active configurations ordered by newest first"""
     return SiteConfiguration.objects.filter(is_active=True).order_by('-updated_at')
 
-
-
-
-
-
-def merge_images_from_configs(request, configs, field_name):
-    """Get image from most recent config that has it, or default"""
-    for config in configs:
-        image = getattr(config, field_name, None)
-        if image and bool(image):
-            return get_safe_image_url(request, config, field_name)
-    return get_safe_image_url(request, configs[0], field_name)  # Default fallback
-
-
-
-
-
-
-
-
 def get_safe_image_url(request, config, field_name):
-    url = getattr(config, f'{field_name}_url', None)
-    if url:
-        return url
-
-
-def get_most_recent_image(configs, field_name):
-    """Get most recent non-null image from configs"""
-    for config in configs:
-        image = getattr(config, field_name, None)
-        if image and bool(image):
-            return image
+    """Get Cloudinary URL"""
+    image_field = getattr(config, field_name, None)
+    if image_field and hasattr(image_field, 'url'):
+        return image_field.url
     return None
 
+def merge_images_from_configs(request, configs, field_name):
+    """Get most recent image from active configs"""
+    for config in configs:
+        url = get_safe_image_url(request, config, field_name)
+        if url:
+            return url
+    return None
 
-
-
-
+def get_most_recent_image(configs, field_name):
+    """Get most recent non-null Cloudinary image"""
+    for config in configs:
+        image = getattr(config, field_name, None)
+        if image and hasattr(image, 'public_id'):
+            return image
+    return None
 
 
 

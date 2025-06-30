@@ -1,0 +1,94 @@
+{% extends "admin/index.html" %}
+{% load i18n static %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="grid">
+        <a href="{% url 'admin:orders_order_changelist' %}" class="tile">
+            <i class="fas fa-box"></i>
+            <span>Orders</span>
+        </a>
+        <a href="{% url 'admin:orders_schedule_changelist' %}" class="tile">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Calendar</span>
+        </a>
+        <a href="{% url 'admin:orders_comment_changelist' %}" class="tile">
+            <i class="fas fa-star"></i>
+            <span>Reviews</span>
+        </a>
+        <a href="{% url 'admin:orders_siteconfiguration_changelist' %}" class="tile">
+            <i class="fas fa-cogs"></i>
+            <span>Configuration</span>
+        </a>
+        <a href="{% url 'admin:auth_user_changelist' %}" class="tile">
+            <i class="fas fa-users"></i>
+            <span>Users</span>
+        </a>
+    </div>
+</div>
+
+<style>
+:root {
+    --tile-padding: clamp(1rem, 2vw, 2rem);
+    --icon-size: clamp(1.5rem, 5vw, 3rem);
+    --font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+    --grid-gap: clamp(1rem, 2vw, 2rem);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+}
+
+.dashboard-container {
+    padding: clamp(1rem, 5vw, 3rem);
+    display: flex;
+    justify-content: center;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+    gap: var(--grid-gap);
+    width: 100%;
+    max-width: 80rem;
+}
+
+/* For very small screens, force 1 column */
+@media (max-width: 480px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.tile {
+    background: white;
+    border-radius: 1rem;
+    padding: var(--tile-padding);
+    text-align: center;
+    text-decoration: none;
+    color: #4a4a4a;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tile:hover {
+    transform: translateY(-0.3rem);
+    box-shadow: 0 0.6rem 1.2rem rgba(0, 0, 0, 0.12);
+}
+
+.tile i {
+    display: block;
+    margin-bottom: 0.75rem;
+    color: #6a1b9a;
+    font-size: var(--icon-size);
+}
+
+.tile span {
+    font-weight: 600;
+    font-size: var(--font-size);
+    display: block;
+}
+</style>
+{% endblock %}

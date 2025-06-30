@@ -15,17 +15,6 @@ load_dotenv()
 STATIC_VERSION = int(time.time())
 
 
-SITE_CONFIG_STORAGE = 'orders.storage.StaticStorage'
-
-DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'  
-
-#DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
-
-
-
-
-
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -34,6 +23,11 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
 
 # Configuración de archivos multimedia
 MEDIA_URL = '/media/'
@@ -160,11 +154,16 @@ JAZZMIN_SETTINGS = {
         "orders.Comment": "fas fa-comments",
         "orders.SiteConfiguration": "fas fa-cogs",
     },
+
     
-    # Custom CSS/JS
-    "custom_css": None,
+
+    # Custom CSS for admin
+    "custom_css": "admin/css/custom_admin.css",
+    
     "custom_js": None,
     
+    
+
     # Overrides para formularios específicos
     "changeform_format_overrides": {
         "auth.user": "collapsible",
@@ -181,14 +180,13 @@ JAZZMIN_SETTINGS = {
     # Lenguaje
     "language_chooser": False,
 }
-
 JAZZMIN_UI_TWEAKS = {
     "navbar_small_text": False,
     "footer_small_text": False,
     "body_small_text": False,
     "brand_small_text": False,
     "brand_colour": "navbar-purple",
-    "accent": "accent-primary",
+    "accent": "accent-navy",
     "navbar": "navbar-purple navbar-dark",
     "no_navbar_border": True,
     "navbar_fixed": False,
@@ -214,8 +212,6 @@ JAZZMIN_UI_TWEAKS = {
     },
     "actions_sticky_top": True
 }
-
-
 
 
 MIDDLEWARE = [

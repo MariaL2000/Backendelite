@@ -1,26 +1,23 @@
-from django.utils import timezone
 from django.contrib import admin
-from django.shortcuts import redirect, render, get_object_or_404
-from django.conf import settings
+from django.shortcuts import  render, get_object_or_404
 from django.urls import reverse, path
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from django.http import HttpResponse
 from urllib.parse import quote
-from .serializers import SiteConfigurationSerializer, OrderSerializer, CommentSerializer, ScheduleSerializer
+from .serializers import  OrderSerializer, CommentSerializer, ScheduleSerializer
 from .models import Order, Comment, Schedule, SiteConfiguration,Schedule
 from django.contrib import admin
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
-from django.db.models import ImageField
-from django.core.files.storage import default_storage
-import os
 from .models import SiteConfiguration
-from django.db import models
-from cloudinary.uploader import upload
-from .form import SiteConfigurationForm
-
+import cloudinary
+from cloudinary.models import CloudinaryField
+from django.utils.html import format_html
+from django import forms
+from .widgets import CloudinaryImageWidget
 
 
 @admin.register(Schedule)
@@ -50,10 +47,14 @@ class ScheduleAdmin(admin.ModelAdmin):
     actions = [mark_as_available, mark_as_unavailable]
 
 
+    
+
+
 
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
+    
     serializer_class = OrderSerializer
     list_display = ("id", "get_client_name", "description", "phone", "email", 
                    "status", "address", "date", "schedule", "send_email_link")
@@ -61,7 +62,7 @@ class OrderAdmin(admin.ModelAdmin):
     search_fields = ("client_name", "email", "phone")
     actions = ["generate_pdf", "mark_as_pending", "mark_as_in_progress", 
               "mark_as_completed", "mark_as_cancelled"]
-    ordering = ["-date"]
+    ordering = ["date"]
 
     list_select_related = ('schedule',)
     
@@ -325,122 +326,101 @@ class CommentAdmin(admin.ModelAdmin):
         return self.serializer_class(*args, **kwargs)
 
 
+
+
+
 @admin.register(SiteConfiguration)
 class SiteConfigurationAdmin(admin.ModelAdmin):
-    form = SiteConfigurationForm
-    serializer_class = SiteConfigurationSerializer
-    list_display = ("primary_color", "secondary_color", "buttons_color", "updated_at", "is_active")
-    list_filter = ("updated_at", "is_active")
-    ordering = ("-updated_at",)
+    list_display = ('id', 'updated_at', 'is_active')
+    list_filter = ('updated_at', 'is_active')
+    ordering = ('-updated_at',)
     save_on_top = True
-    actions = ["activate_config"]
-    list_editable = ("is_active",)
-
-    def get_list_display_links(self, request, list_display):
-        return ["id"]
+    actions = ['activate_config']
+    list_editable = ('is_active',)
 
     fieldsets = (
-        ("Color Settings", {
-            "classes": ("collapse",),
-            "fields": ("primary_color", "secondary_color", "buttons_color"),
-        }),
-        ("Main Carousel", {
-            "fields": (
-                "image_carrousel_1", "image_carrousel_2", "image_carrousel_3",
-                "image_carrousel_1_url", "image_carrousel_2_url", "image_carrousel_3_url",
+        ('🎨 Theme Colors', {
+            'description': 'Customize the main color scheme of your website',
+            'fields': (
+                ('primary_color', 'secondary_color'),
+                'buttons_color'
             ),
+            'classes': ('wide', 'extrapretty'),
         }),
-        ("Material Showcase", {
-            "classes": ("collapse",),
-            "fields": (
-                ("granite_countertop_1", "granite_countertop_2"),
-                ("granite_countertop_1_url", "granite_countertop_2_url"),
-                ("quartz_countertop_1", "quartz_countertop_2"),
-                ("quartz_countertop_1_url", "quartz_countertop_2_url"),
-                ("quartzite_countertop_1", "quartzite_countertop_2"),
-                ("quartzite_countertop_1_url", "quartzite_countertop_2_url"),
+        ('🎠 Homepage Carousel', {
+            'description': 'Manage the main slideshow images (Recommended size: 1920x1080px)',
+            'fields': ('image_carrousel_1', 'image_carrousel_2', 'image_carrousel_3'),
+            'classes': ('wide',),
+        }),
+        ('💎 Materials Showcase', {
+            'description': 'Display your premium countertop materials',
+            'fields': (
+                'granite_countertop_1', 'granite_countertop_2',
+                'quartz_countertop_1', 'quartz_countertop_2',
+                'quartzite_countertop_1', 'quartzite_countertop_2'
             ),
+            'classes': ('wide',),
         }),
-        ("Comparison Section", {
-            "fields": ("image_before", "image_after", "image_before_url", "image_after_url"),
+        ('✨ Before & After', {
+            'description': 'Showcase transformation projects',
+            'fields': ('image_before', 'image_after'),
+            'classes': ('wide',),
         }),
-        ("Bathroom Gallery", {
-            "classes": ("collapse",),
-            "fields": [f"bathroom_{i}" for i in range(1, 11)] + [f"bathroom_{i}_url" for i in range(1, 11)],
+        ('🚽 Bathroom Gallery', {
+            'description': 'Bathroom renovation projects',
+            'fields': tuple(f'bathroom_{i}' for i in range(1, 11)),
+            'classes': ('wide',),
         }),
-        ("Kitchen Gallery", {
-            "classes": ("collapse",),
-            "fields": [f"kitchen_{i}" for i in range(1, 11)] + [f"kitchen_{i}_url" for i in range(1, 11)],
+        ('🍳 Kitchen Gallery', {
+            'description': 'Kitchen renovation projects',
+            'fields': tuple(f'kitchen_{i}' for i in range(1, 11)),
+            'classes': ('wide',),
         }),
-        ("Fireplace Gallery", {
-            "classes": ("collapse",),
-            "fields": [f"fireplace_{i}" for i in range(1, 11)] + [f"fireplace_{i}_url" for i in range(1, 11)],
+        ('🔥 Fireplace Gallery', {
+            'description': 'Fireplace renovation projects',
+            'fields': tuple(f'fireplace_{i}' for i in range(1, 11)),
+            'classes': ('wide',),
         }),
-        ("About Us Page", {
-            "classes": ("collapse",),
-            "fields": (
-                "company_picture_1", "company_picture_2", "company_picture_3",
-                "company_picture_1_url", "company_picture_2_url", "company_picture_3_url",
-                "admin_perfil", "admin_2_perfil", "architect",
-                "admin_perfil_url", "admin_2_perfil_url", "architect_url",
+        ('👥 Team Members', {
+            'description': 'Showcase your professional team',
+            'fields': (
+                'admin_perfil', 'admin_2_perfil', 'architect',
+                'company_picture_1', 'company_picture_2', 'company_picture_3'
             ),
+            'classes': ('wide',),
         }),
     )
 
-    def get_serializer(self, *args, **kwargs):
-        return self.serializer_class(*args, **kwargs)
-
-    def save_model(self, request, obj, form, change):
-        uploadable_fields = [
-            "image_carrousel_1", "image_carrousel_2", "image_carrousel_3",
-            "granite_countertop_1", "granite_countertop_2",
-            "quartz_countertop_1", "quartz_countertop_2",
-            "quartzite_countertop_1", "quartzite_countertop_2",
-            "image_before", "image_after",
-            *[f"bathroom_{i}" for i in range(1, 11)],
-            *[f"kitchen_{i}" for i in range(1, 11)],
-            *[f"fireplace_{i}" for i in range(1, 11)],
-            "company_picture_1", "company_picture_2", "company_picture_3",
-            "admin_perfil", "admin_2_perfil", "architect",
-        ]
-
-        for base_field in uploadable_fields:
-            file = form.cleaned_data.get(base_field)
-            if file:
-                url_field = f"{base_field}_url"
-                public_id_field = f"{base_field}_public_id"
-                try:
-                    result = upload(file)
-                    setattr(obj, url_field, result.get("secure_url"))
-                    setattr(obj, public_id_field, result.get("public_id"))
-                except Exception as e:
-                    self.message_user(request, f"Error uploading {base_field} to Cloudinary: {e}", level='ERROR')
-
-        obj.updated_at = timezone.now()
-        super().save_model(request, obj, form, change)
-
-    def activate_config(self, request, queryset):
-        config = queryset.first()
-        SiteConfiguration.objects.filter(is_active=True).update(is_active=False)
-        config.is_active = True
-        config.save()
-        self.message_user(request, f"Configuración {config.id} activada")
-
-    activate_config.short_description = "Activate configuration"
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if isinstance(db_field, CloudinaryField):
+            kwargs['widget'] = CloudinaryImageWidget
+        return super().formfield_for_dbfield(db_field, **kwargs)
 
     def delete_model(self, request, obj):
         try:
             for field in obj._meta.fields:
-                if field.name.endswith('_public_id'):
-                    public_id = getattr(obj, field.name)
-                    if public_id and default_storage.exists(public_id):
-                        default_storage.delete(public_id)
+                if isinstance(field, CloudinaryField):
+                    image = getattr(obj, field.name)
+                    if image and hasattr(image, 'public_id'):
+                        cloudinary.uploader.destroy(image.public_id)
             super().delete_model(request, obj)
+            self.message_user(request, 'Configuration deleted successfully')
         except Exception as e:
-            self.message_user(request, f"Error deleting files: {str(e)}", level='ERROR')
-
+            self.message_user(request, f'Error deleting: {str(e)}', level='ERROR')
+    
     def delete_queryset(self, request, queryset):
         for obj in queryset:
             self.delete_model(request, obj)
 
-            
+    def activate_config(self, request, queryset):
+        config = queryset.first()
+        config.is_active = True
+        config.save()
+        self.message_user(request, f"Configuration {config.id} activated")
+
+    activate_config.short_description = "Activate configuration"
+
+    class Media:
+        css = {
+            'all': ('admin/css/cloudinary.css',)
+        }
