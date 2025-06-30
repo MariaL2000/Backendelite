@@ -38,7 +38,7 @@ config = Config(repository=os.path.join(BASE_DIR, '.env'))
 
 
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
-ALLOWED_HOSTS = ['backendelite.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['backendelite1.onrender.com', 'localhost', '127.0.0.1']
 
 
 SECURE_ALLOWED_REDIRECTS = ['mailto:']
