@@ -7,19 +7,32 @@ class CloudinaryImageWidget(forms.ClearableFileInput):
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
-        # Get all active config images
+        # Get active config images
         from .models import SiteConfiguration
         active_images = SiteConfiguration.get_active_images(name)
         
-        if active_images:
-            previews = ''.join([
-                f'<img src="{img["url"]}" title="Config {img["config_id"]}" '
-                f'style="max-width:150px; margin:5px; border:2px solid #eee;">'
-                for img in active_images
-            ])
-            context['widget']['active_previews'] = mark_safe(previews)
-            
+        # Get current image if exists
         if value and hasattr(value, 'url'):
-            context['widget']['current_image'] = value.url
+            context['widget'].update({
+                'is_image': True,
+                'current_image': value.url,
+                'name': name,
+            })
+
+        # Add most recent active image if available
+        if active_images:
+            most_recent = active_images[0]  # Get only most recent
+            context['widget'].update({
+                'has_active': True,
+                'active_preview': format_html(
+                    '<div class="active-image">'
+                    '<p>Current active image:</p>'
+                    '<img src="{}" title="Config {}" '
+                    'style="max-width:200px; margin:5px; border:2px solid #eee;">'
+                    '</div>',
+                    most_recent['url'],
+                    most_recent['config_id']
+                )
+            })
             
         return context

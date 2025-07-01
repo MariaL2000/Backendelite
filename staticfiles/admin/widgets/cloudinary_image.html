@@ -1,18 +1,159 @@
-<div class="cloudinary-field">
-  {% if widget.current_image %}
-  <div class="current-preview">
-      <p>Current image:</p>
-      <img src="{{ widget.current_image }}" style="max-width:200px;">
-  </div>
-  {% endif %}
-  
-  {% if widget.active_previews %}
-  <div class="active-previews">
-      <p>Images from active configurations:</p>
-      {{ widget.active_previews }}
-  </div>
-  {% endif %}
-  
-  <input type="{{ widget.type }}" name="{{ widget.name }}"
-         {% include "django/forms/widgets/attrs.html" %}>
+<div class="cloudinary-widget responsive-container">
+    {% if widget.current_image %}
+    <div class="preview-container current-preview">
+        <h4 class="preview-title">Selected image:</h4>
+        <div class="img-wrapper">
+            <img src="{{ widget.current_image }}" class="preview-img" alt="Current image">
+        </div>
+    </div>
+    {% endif %}
+    
+    {% if widget.has_active %}
+    <div class="preview-container active-preview">
+        {{ widget.active_preview }}
+    </div>
+    {% endif %}
+    
+    <div class="input-wrapper">
+        <input type="{{ widget.type }}" 
+               name="{{ widget.name }}"
+               class="file-input"
+               {% include "django/forms/widgets/attrs.html" %}>
+    </div>
 </div>
+
+<style>
+:root {
+    --spacing-unit: clamp(0.5rem, 2vw, 2rem);
+    --container-width: min(100%, 120rem);
+    --border-radius: clamp(0.25rem, 1vw, 0.5rem);
+    --font-size: clamp(0.875rem, 1vw + 0.2rem, 1rem);
+    --container-padding: clamp(1rem, 3vw, 3rem);
+    --img-min-height: clamp(15rem, 40vh, 50rem);
+}
+
+.cloudinary-widget {
+    width: 100%;
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: var(--container-padding);
+}
+
+.preview-container {
+    width: 100%;
+    margin-bottom: var(--spacing-unit);
+    background: #f8f9fa;
+    border-radius: var(--border-radius);
+    padding: var(--spacing-unit);
+    box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.1);
+}
+
+.preview-title {
+    margin: 0 0 var(--spacing-unit) 0;
+    font-size: var(--font-size);
+    color: #495057;
+}
+
+.img-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: var(--img-min-height);
+    aspect-ratio: 16/9;
+    background: #fff;
+    border-radius: calc(var(--border-radius) * 0.5);
+    overflow: hidden;
+}
+
+.preview-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit:cover;
+}
+
+.input-wrapper {
+    margin-top: var(--spacing-unit);
+}
+
+.file-input {
+    width: 100%;
+    padding: calc(var(--spacing-unit) * 0.5);
+    border: 1px solid #ced4da;
+    border-radius: var(--border-radius);
+    font-size: var(--font-size);
+}
+
+@media (max-width: 48rem) { /* 768px */
+    .img-wrapper {
+        aspect-ratio: 1/1;
+    }
+}
+
+@media (min-width: 48rem) and (max-width: 75rem) { /* 768px to 1200px */
+    .img-wrapper {
+        aspect-ratio: 4/3;
+    }
+}
+
+@media (min-width: 120rem) { /* 1920px */
+    :root {
+        --font-size: clamp(1rem, 1.5vw, 1.5rem);
+    }
+}
+</style> 
+
+<script>
+document.querySelector('input[name="{{ widget.name }}"]').addEventListener('change', function(e) {
+    if (this.files && this.files[0]) {
+        let container = this.closest('.cloudinary-widget').querySelector('.current-preview');
+        
+        // Create preview container if it doesn't exist
+        if (!container) {
+            container = document.createElement('div');
+            container.className = 'preview-container current-preview';
+            
+            const title = document.createElement('h4');
+            title.className = 'preview-title';
+            title.textContent = 'Selected image:';
+            
+            const wrapper = document.createElement('div');
+            wrapper.className = 'img-wrapper';
+            
+            const img = document.createElement('img');
+            img.className = 'preview-img';
+            
+            wrapper.appendChild(img);
+            container.appendChild(title);
+            container.appendChild(wrapper);
+            
+            this.closest('.cloudinary-widget').insertBefore(container, this.closest('.input-wrapper'));
+        }
+        
+        // Update preview image
+        const preview = container.querySelector('.preview-img');
+        if (preview) {
+            preview.src = URL.createObjectURL(this.files[0]);
+            // Ensure container is visible
+            container.style.display = 'block';
+        }
+    }
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

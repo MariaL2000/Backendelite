@@ -208,10 +208,8 @@ class SiteConfiguration(models.Model):
     company_picture_2 = CloudinaryField('Company 2', blank=True, null=True)
     company_picture_3 = CloudinaryField('Company 3', blank=True, null=True)
 
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Track initial state of images
         self._initial_images = {}
         for field in self._meta.fields:
             if isinstance(field, CloudinaryField):
@@ -219,18 +217,33 @@ class SiteConfiguration(models.Model):
 
     @classmethod
     def get_active_images(cls, field_name):
-        """Get all images from active configurations for a field"""
-        images = []
+        """Get all images from active configurations"""
         active_configs = cls.objects.filter(is_active=True).order_by('-updated_at')
+        images = []
+        seen_urls = set()  # Track unique images
+        
         for config in active_configs:
             image = getattr(config, field_name, None)
             if image and hasattr(image, 'url'):
-                images.append({
-                    'url': image.url,
-                    'config_id': config.id,
-                    'updated_at': config.updated_at
-                })
+                # Only add if URL not already seen
+                if image.url not in seen_urls:
+                    images.append({
+                        'url': image.url,
+                        'config_id': config.id,
+                        'updated_at': config.updated_at
+                    })
+                    seen_urls.add(image.url)
         return images
+
+    @classmethod
+    def get_most_recent_active_image(cls, field_name):
+        """Get most recent image for a field from active configs"""
+        return cls.objects.filter(
+            is_active=True,
+            **{f"{field_name}__isnull": False}
+        ).order_by('-updated_at').values_list(field_name, flat=True).first()
+
+    
 
     @classmethod
     def copy_previous_config(cls):
@@ -262,20 +275,22 @@ class SiteConfiguration(models.Model):
                 old_value = getattr(old_instance, field.name)
                 new_value = getattr(self, field.name)
                 
-                # Only process changed images
                 if new_value and new_value != old_value:
+                    # Delete old image
                     if old_value and hasattr(old_value, 'public_id'):
                         try:
                             cloudinary.uploader.destroy(old_value.public_id)
                         except Exception as e:
                             print(f"Error deleting old image {field.name}: {e}")
-                elif not new_value:
+                            # Set new image
+                    setattr(self, field.name, new_value)
+                elif not new_value and old_value:
                     # Keep old image if no new one provided
                     setattr(self, field.name, old_value)
 
         super().save(*args, **kwargs)
         
-        # Update initial states after save
+        # Update initial states
         for field in self._meta.fields:
             if isinstance(field, CloudinaryField):
                 self._initial_images[field.name] = getattr(self, field.name)
