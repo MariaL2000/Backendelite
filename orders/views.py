@@ -19,6 +19,7 @@ from django.urls import reverse
 #from .forms import ScheduleSelectionForm,ClientOrderForm
 from django.conf import settings
 from urllib.parse import quote
+import random
 
 from rest_framework.permissions import AllowAny
 
@@ -249,54 +250,9 @@ def gallery_api(request):
     except Exception as e:
         return Response({'success': False, 'error': str(e)}, status=500)
 
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def about_api(request):
-    try:
-        configs = get_active_configs()
-        if not configs:
-            configs = [SiteConfiguration.objects.create()]
 
-        company_pictures = []
-        team_images = []
 
-        # Process company pictures
-        for i in range(1, 6):
-            field_name = f'company_picture_{i}'
-            url = None
-            for config in configs:
-                if getattr(config, field_name, None):
-                    url = get_safe_image_url(request, config, field_name)
-                    break
-            if not url:
-                url = get_safe_image_url(request, configs[0], field_name)
-            company_pictures.append(url)
 
-        # Process team images
-        team_fields = ['admin_perfil', 'admin_2_perfil', 'architect']
-        for field_name in team_fields:
-            url = None
-            for config in configs:
-                if getattr(config, field_name, None):
-                    url = get_safe_image_url(request, config, field_name)
-                    break
-            if not url:
-                url = get_safe_image_url(request, configs[0], field_name)
-            team_images.append(url)
-
-        return Response({
-            'success': True,
-            'data': {
-                'company_pictures': company_pictures,
-                'team': {
-                    'admin': team_images[0],
-                    'admin_2': team_images[1],
-                    'architect': team_images[2]
-                }
-            }
-        })
-    except Exception as e:
-        return Response({'success': False, 'error': str(e)}, status=500)
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -306,8 +262,8 @@ def index_api(request):
         if not configs:
             configs = [SiteConfiguration.objects.create()]
 
-        # Get carousel images
-        carousel = []
+        # Get main carousel images (1-3)
+        main_carousel = []
         for i in range(1, 4):
             field_name = f'image_carrousel_{i}'
             url = None
@@ -317,22 +273,53 @@ def index_api(request):
                     break
             if not url:
                 url = get_safe_image_url(request, configs[0], field_name)
-            carousel.append(url)
+            main_carousel.append(url)
+            
+        # Get second carousel images (4-6)
+        second_carousel = []
+        for i in range(4, 7):
+            field_name = f'image_carrousel_{i}'
+            url = None
+            for config in configs:
+                if getattr(config, field_name, None):
+                    url = get_safe_image_url(request, config, field_name)
+                    break
+            if not url:
+                url = get_safe_image_url(request, configs[0], field_name)
+            second_carousel.append(url)
 
-        # Get materials images
+        # Get material showcase images
         materials = {}
-        for material in ['granite', 'quartz', 'quartzite']:
-            materials[material] = []
-            for i in range(1, 3):
-                field_name = f'{material}_countertop_{i}'
+        for material in ['quartz', 'granite', 'marble', 'quartzite']:
+            field_name = f'image_{material}'
+            url = None
+            for config in configs:
+                if getattr(config, field_name, None):
+                    url = get_safe_image_url(request, config, field_name)
+                    break
+            if not url:
+                url = get_safe_image_url(request, configs[0], field_name)
+            materials[material] = url
+
+        # Get random gallery images
+        galleries = {}
+        for gallery_type in ['bathroom', 'kitchen', 'fireplace']:
+            available_images = []
+            for i in range(1, 11):
+                field_name = f'{gallery_type}_{i}'
                 url = None
                 for config in configs:
                     if getattr(config, field_name, None):
                         url = get_safe_image_url(request, config, field_name)
+                        if url:
+                            available_images.append(url)
                         break
-                if not url:
-                    url = get_safe_image_url(request, configs[0], field_name)
-                materials[material].append(url)
+            
+            # Select 3 random images if available
+            galleries[gallery_type] = random.sample(
+                available_images, 
+                min(3, len(available_images))
+            ) if available_images else []
 
         # Get before/after images
         before_after = {}
@@ -349,8 +336,10 @@ def index_api(request):
         return Response({
             'success': True,
             'data': {
-                'carousel': carousel,
+                'main_carousel': main_carousel,
+                'second_carousel': second_carousel,
                 'materials': materials,
+                'galleries': galleries,
                 'comparison': {'before_after': before_after},
                 'colors': {
                     'primary': configs[0].primary_color,

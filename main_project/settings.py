@@ -104,11 +104,6 @@ CLOUDINARY_STORAGE = {
 }
 
 
-print("Cloudinary Key:", os.environ.get('API_KEY'))  # o config('API_KEY')
-
-
-
-
 
 JAZZMIN_SETTINGS = {
     # Títulos generales

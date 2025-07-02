@@ -149,6 +149,30 @@ class SiteConfiguration(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True, help_text="Configuración actualmente activa")
     
+
+
+
+    # Modelos de la index
+    image_carrousel_1 = CloudinaryField('Main slider 1', blank=True, null=True)
+    image_carrousel_2 = CloudinaryField('Main slider 2', blank=True, null=True)
+    image_carrousel_3 = CloudinaryField('Main slider 3', blank=True, null=True)
+    
+    image_carrousel_4 = CloudinaryField('Second slider 4', blank=True, null=True)
+    image_carrousel_5 = CloudinaryField('Second slider 5', blank=True, null=True)
+    image_carrousel_6 = CloudinaryField('Second slider 6', blank=True, null=True)
+    
+
+    #para los materiales
+    image_quartz = CloudinaryField('Quartz', blank=True, null=True)
+    image_granite = CloudinaryField('Granite', blank=True, null=True)
+    image_marble = CloudinaryField('Marble', blank=True, null=True)
+    image_quartzite = CloudinaryField('Quartzite', blank=True, null=True)
+
+    # Before/After
+    image_before = CloudinaryField('Before', blank=True, null=True)
+    image_after = CloudinaryField('After', blank=True, null=True)
+
+    #para el carrousel largo son 3 aleatorias de c/u
     bathroom_1 = CloudinaryField('Bathroom 1', blank=True, null=True)
     bathroom_2 = CloudinaryField('Bathroom 2', blank=True, null=True)
     bathroom_3 = CloudinaryField('Bathroom 3', blank=True, null=True)
@@ -183,31 +207,8 @@ class SiteConfiguration(models.Model):
     fireplace_9 = CloudinaryField('Fireplace 9', blank=True, null=True)
     fireplace_10 = CloudinaryField('Fireplace 10', blank=True, null=True)
 
-    # Main Carousel
-    image_carrousel_1 = CloudinaryField('Carousel 1', blank=True, null=True)
-    image_carrousel_2 = CloudinaryField('Carousel 2', blank=True, null=True)
-    image_carrousel_3 = CloudinaryField('Carousel 3', blank=True, null=True)
-
-    # Material Showcase
-    granite_countertop_1 = CloudinaryField('Granite 1', blank=True, null=True)
-    granite_countertop_2 = CloudinaryField('Granite 2', blank=True, null=True)
-    quartz_countertop_1 = CloudinaryField('Quartz 1', blank=True, null=True)
-    quartz_countertop_2 = CloudinaryField('Quartz 2', blank=True, null=True)
-    quartzite_countertop_1 = CloudinaryField('Quartzite 1', blank=True, null=True)
-    quartzite_countertop_2 = CloudinaryField('Quartzite 2', blank=True, null=True)
-
-    # Before/After
-    image_before = CloudinaryField('Before', blank=True, null=True)
-    image_after = CloudinaryField('After', blank=True, null=True)
-
-    # Team
-    admin_perfil = CloudinaryField('Admin Profile', blank=True, null=True)
-    admin_2_perfil = CloudinaryField('Admin 2 Profile', blank=True, null=True)
-    architect = CloudinaryField('Architect Profile', blank=True, null=True)
-    company_picture_1 = CloudinaryField('Company 1', blank=True, null=True)
-    company_picture_2 = CloudinaryField('Company 2', blank=True, null=True)
-    company_picture_3 = CloudinaryField('Company 3', blank=True, null=True)
-
+    
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._initial_images = {}

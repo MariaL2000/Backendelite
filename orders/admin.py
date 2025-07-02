@@ -338,7 +338,15 @@ class SiteConfigurationAdmin(admin.ModelAdmin):
     actions = ['activate_config']
     list_editable = ('is_active',)
 
+
+
+
     fieldsets = (
+        ('⚙️ Configuration', {
+            'description': 'Configuration status and timestamps',
+            'fields': ('is_active',),
+            'classes': ('wide',),
+        }),
         ('🎨 Theme Colors', {
             'description': 'Customize the main color scheme of your website',
             'fields': (
@@ -347,17 +355,21 @@ class SiteConfigurationAdmin(admin.ModelAdmin):
             ),
             'classes': ('wide', 'extrapretty'),
         }),
-        ('🎠 Homepage Carousel', {
+        ('🎠 Main Carousel', {
             'description': 'Manage the main slideshow images (Recommended size: 1920x1080px)',
             'fields': ('image_carrousel_1', 'image_carrousel_2', 'image_carrousel_3'),
+            'classes': ('wide',),
+        }),
+        ('🎪 Second Carousel', {
+            'description': 'Manage secondary slideshow images',
+            'fields': ('image_carrousel_4', 'image_carrousel_5', 'image_carrousel_6'),
             'classes': ('wide',),
         }),
         ('💎 Materials Showcase', {
             'description': 'Display your premium countertop materials',
             'fields': (
-                'granite_countertop_1', 'granite_countertop_2',
-                'quartz_countertop_1', 'quartz_countertop_2',
-                'quartzite_countertop_1', 'quartzite_countertop_2'
+                'image_quartz', 'image_granite',
+                'image_marble', 'image_quartzite'
             ),
             'classes': ('wide',),
         }),
@@ -367,29 +379,22 @@ class SiteConfigurationAdmin(admin.ModelAdmin):
             'classes': ('wide',),
         }),
         ('🚽 Bathroom Gallery', {
-            'description': 'Bathroom renovation projects',
+            'description': 'Bathroom renovation projects (3 random images will be shown)',
             'fields': tuple(f'bathroom_{i}' for i in range(1, 11)),
             'classes': ('wide',),
         }),
         ('🍳 Kitchen Gallery', {
-            'description': 'Kitchen renovation projects',
-            'fields': tuple(f'kitchen_{i}' for i in range(1, 11)),
+            'description': 'Kitchen renovation projects (3 random images will be shown)',
+             'fields': tuple(f'kitchen_{i}' for i in range(1, 11)),
             'classes': ('wide',),
         }),
         ('🔥 Fireplace Gallery', {
-            'description': 'Fireplace renovation projects',
+            'description': 'Fireplace renovation projects (3 random images will be shown)',
             'fields': tuple(f'fireplace_{i}' for i in range(1, 11)),
             'classes': ('wide',),
         }),
-        ('👥 Team Members', {
-            'description': 'Showcase your professional team',
-            'fields': (
-                'admin_perfil', 'admin_2_perfil', 'architect',
-                'company_picture_1', 'company_picture_2', 'company_picture_3'
-            ),
-            'classes': ('wide',),
-        }),
     )
+    
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         if isinstance(db_field, CloudinaryField):
