@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.shortcuts import  render, get_object_or_404
 from django.urls import reverse, path
 from django.utils.html import format_html
-from django.utils.safestring import mark_safe
 from django.http import HttpResponse
 from urllib.parse import quote
 from .serializers import  OrderSerializer, CommentSerializer, ScheduleSerializer
@@ -16,7 +15,6 @@ from .models import SiteConfiguration
 import cloudinary
 from cloudinary.models import CloudinaryField
 from django.utils.html import format_html
-from django import forms
 from .widgets import CloudinaryImageWidget
 
 

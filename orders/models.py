@@ -2,7 +2,6 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
 from colorfield.fields import ColorField
-
 import cloudinary
 import cloudinary.uploader
 from cloudinary.models import CloudinaryField

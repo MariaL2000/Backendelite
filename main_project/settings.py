@@ -113,10 +113,6 @@ JAZZMIN_SETTINGS = {
     "site_logo": None,
     "welcome_sign": "Bienvenido al panel de administración de Elite Countertops",
     "copyright": "Elite Countertops",
-    
-    # Favicon - Asegúrate de tener el archivo en static/images/favicon.ico
-    
-    # Avatar de usuario
     "user_avatar": None,
     
     # UI
