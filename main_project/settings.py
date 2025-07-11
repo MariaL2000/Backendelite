@@ -115,7 +115,6 @@ JAZZMIN_SETTINGS = {
     "copyright": "Elite Countertops",
     
     # Favicon - Asegúrate de tener el archivo en static/images/favicon.ico
-    "site_icon": "images/favicon.ico",  # o .png si prefieres
     
     # Avatar de usuario
     "user_avatar": None,

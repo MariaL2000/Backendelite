@@ -8,21 +8,11 @@ from .serializers import (
     
 )
 
-from django.core.exceptions import ValidationError
-import os
 from .models import Comment, Client, Order, SiteConfiguration
-from django.http import FileResponse, HttpResponse
-
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import  get_object_or_404
 from django.core.mail import send_mail
-from django.urls import reverse
-#from .forms import ScheduleSelectionForm,ClientOrderForm
-from django.conf import settings
-from urllib.parse import quote
 import random
-
 from rest_framework.permissions import AllowAny
-
 from rest_framework.decorators import api_view, permission_classes
 
 
@@ -141,16 +131,14 @@ def send_email_to_client(request, order_id):
             order.schedule = schedule
             order.save()
             
-            contact_page_url = request.build_absolute_uri(
-                reverse("orders:contact_page", args=[order.id])
-            )
             
             email_data = {
                 "subject": f"Order Details - {order.id}",
                 "body": f"""Dear {order.client_name},
                 Your order is scheduled for {schedule.time_slot} on {schedule.date}.
                 The approximate price is $XXX.XX.
-                You can accept or reject the offer here: {contact_page_url}"""
+                You can accept or reject the offer sending us an email.
+                Thank you for choosing"""
             }
             
             return Response({"email_data": email_data, "schedule": serializer.data}, 
@@ -158,44 +146,6 @@ def send_email_to_client(request, order_id):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     return Response({"order_id": order_id})
-
-
-@api_view(['GET', 'POST'])
-def confirm_page_api(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
-
-    if request.method == "POST":
-        action = request.data.get("action")
-
-        if action == "accept":
-            order.status = "accepted"
-            order.save()
-            subject = f"Order {order.id} Accepted"
-            message = f"The customer has accepted the offer for order ID {order.id}."
-        elif action == "reject":
-            order.status = "rejected"
-            order.save()
-            subject = f"Order {order.id} Rejected"
-            message = f"The customer has rejected the offer for order ID {order.id}."
-        else:
-            return Response({"error": "Invalid action"}, status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            send_mail(
-                subject=subject,
-                message=message,
-                from_email="your_email@yourdomain.com",  # <-- Make sure this is configured
-                recipient_list=["mariamarreromedrano@gmail.com"],
-                fail_silently=False
-            )
-        except Exception as e:
-            return Response({"error": f"Error sending email: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-        return Response({"status": order.status}, status=status.HTTP_200_OK)
-
-    # GET method
-    serializer = OrderSerializer(order)
-    return Response(serializer.data)
 
 
 

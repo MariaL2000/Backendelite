@@ -3,6 +3,8 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
+from django.urls import re_path
+from django.http import HttpResponse
 
 router = routers.DefaultRouter()
 
@@ -11,6 +13,7 @@ urlpatterns = [
     path('api/', include(router.urls)),
      path('', include('orders.urls')),
     path('api-auth/', include('rest_framework.urls')),
+    re_path(r'^\.well-known/.*$', lambda request: HttpResponse(status=204)),
     
 ]
 

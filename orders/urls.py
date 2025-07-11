@@ -6,7 +6,7 @@ app_name = 'orders'
 urlpatterns = [
     
     path('api/send-email/<int:order_id>/', views.send_email_to_client, name='send_email_to_client'),
-    path('api/confirm/<int:order_id>/', views.confirm_page_api, name='contact_page'),#esta vista tmb sera en react
+   
 
     # React API Endpoints
     

@@ -85,15 +85,13 @@ class OrderAdmin(admin.ModelAdmin):
             order.schedule = schedule
             order.save()
 
-            contact_page_url = request.build_absolute_uri(
-                reverse('orders:contact_page', args=[order.id])
-            )
+            
             body = f"""Dear {order.client_name},
 
 Your order is scheduled for {schedule.time_slot} on {schedule.date}.
 The approximate price is $XXX.XX.
 
-You can view and respond to this order here: {contact_page_url}
+You can view and respond to this order sending us and email.
 
 Best regards,
 Elite Countertops"""

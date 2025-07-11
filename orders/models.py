@@ -52,7 +52,7 @@ class Comment(models.Model):
             raise ValidationError("Rating must be between 0 and 5.")
 
     def save(self, *args, **kwargs):
-        self.clean()  # Aseguramos que la validación se ejecute al guardar
+        self.clean() 
         super().save(*args, **kwargs)
 
     class Meta:
