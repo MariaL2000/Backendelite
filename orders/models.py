@@ -7,20 +7,6 @@ import cloudinary.uploader
 from cloudinary.models import CloudinaryField
 
 
-THEME_COLORS = [
-    ('#007BFFFF', 'Blue'),
-    ('#1D097FFF', 'Blue2'),
-    ('#28A745FF', 'Green'), 
-    ('#DC3545FF', 'Red'),
-    ('#895188FF', 'Cyan'),
-    ('#6C757DFF', 'Gray'),
-    ('#CBC3FFFF', 'Gray2'),
-    ('#651A89FF', 'Dark'),
-    ('#FFFFFFFF', 'White'),
-    ('#000000FF', 'Black'),
-    ('#CF1DBDFF', 'Violet'),
-    ('#9027E9FF', 'Violet2'),
-]
 
 class Client(models.Model):
     name = models.CharField(max_length=255)
@@ -121,29 +107,20 @@ class Schedule(models.Model):
 class SiteConfiguration(models.Model):
     # Colores principales y secundarios
     primary_color = ColorField(
-        choices=[('', '---------')] + THEME_COLORS, 
         format="hexa",
         null=True,
         blank=True,
         default=None,
-        help_text=('Main brand color used throughout the site') 
+        help_text=('Main brand color used in buttons') 
     )
-    secondary_color = ColorField(
-        choices=[('', '---------')] + THEME_COLORS,  
+    secondary_color = ColorField( 
         format="hexa",
         null=True,
         blank=True,
         default=None,
-        help_text=('Secondary color for accents and highlights')
+        help_text=('Color used of background of the website')
     )
-    buttons_color = ColorField(
-        choices=[('', '---------')] + THEME_COLORS,  
-        format="hexa",
-        null=True,
-        blank=True,
-        default=None,
-        help_text=('Color for all action buttons')
-    )
+    
 
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True, help_text="Configuración actualmente activa")

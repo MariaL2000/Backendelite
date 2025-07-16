@@ -293,8 +293,8 @@ def index_api(request):
                 'comparison': {'before_after': before_after},
                 'colors': {
                     'primary': configs[0].primary_color,
-                    'secondary': configs[0].secondary_color,
-                    'buttons': configs[0].buttons_color
+                    'secondary': configs[0].secondary_color
+                    
                 }
             }
         })

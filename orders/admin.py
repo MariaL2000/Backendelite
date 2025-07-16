@@ -347,7 +347,6 @@ class SiteConfigurationAdmin(admin.ModelAdmin):
             'description': 'Customize the main color scheme of your website',
             'fields': (
                 ('primary_color', 'secondary_color'),
-                'buttons_color'
             ),
             'classes': ('wide', 'extrapretty'),
         }),
