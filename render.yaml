@@ -3,7 +3,7 @@ services:
     name: EliteBackend
     env: python
     plan: free
-    rootDirectory: main_project  
+    rootDirectory: main_project
     buildCommand: pip install -r requirements.txt
     startCommand: |
       python manage.py collectstatic --noinput
@@ -29,6 +29,6 @@ services:
     healthCheckPath: /admin/login/
 
   - type: postgresql
-    name: elitedb_d3uk
+    name: elitedb_jp7g
     plan: free
     ipAllowList: []
